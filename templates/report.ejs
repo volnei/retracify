@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dependency Report</title>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ["Inter", "system-ui", "sans-serif"],
+          mono: ["JetBrains Mono", "Menlo", "monospace"],
+        },
+        boxShadow: {
+          surface: "0 22px 48px -28px rgba(8, 15, 28, 0.85)",
+        },
+      },
+    },
+  };
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; position: relative; }
+  html { scroll-behavior: smooth; }
+  a.no-underline:hover { text-decoration: none !important; }
+  .github-corner svg { fill: #151513; color: #ffffff; }
+  .github-corner svg .octo-arm { transform-origin: 130px 106px; }
+  .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+  .github-corner:focus-visible { outline: 2px solid rgba(248, 250, 252, 0.9); outline-offset: 4px; }
+  @keyframes octocat-wave {
+    0%, 100% { transform: rotate(0); }
+    20%, 60% { transform: rotate(-20deg); }
+    40%, 80% { transform: rotate(10deg); }
+  }
+  @media (max-width: 640px) {
+    .github-corner { display: none; }
+    .github-stars { display: none !important; }
+  }
+</style>
+</head>
+<body class="min-h-screen bg-stone-950 bg-[radial-gradient(circle_at_top,_rgba(120,113,108,0.1),_transparent_60%)] text-stone-200 antialiased">
+  <a href="https://github.com/volnei/retrace" class="github-corner absolute right-0 top-0 z-40" aria-label="View source on GitHub" target="_blank" rel="noreferrer">
+    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
+    <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#fff"/>
+    <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
+    <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
+    </svg>
+  </a>
+  <div class="github-stars absolute right-4 top-24 z-30 hidden flex-col items-end gap-2 text-right sm:flex">
+    <div class="inline-flex items-center gap-2 rounded-full border border-stone-800/70 bg-stone-950/80 px-3 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-stone-300 shadow-[0_10px_25px_-20px_rgba(0,0,0,0.9)]">
+      <span class="h-2 w-2 rounded-full bg-emerald-400/80"></span>
+      <span>volnei/retrace</span>
+    </div>
+    <div id="githubStars" class="inline-flex items-center gap-2 rounded-md border border-stone-800/70 bg-stone-950/80 px-3 py-1 text-[11px] font-mono text-amber-200 shadow-[0_10px_25px_-20px_rgba(0,0,0,0.9)]">
+      <span class="text-amber-300">★</span>
+      <span class="uppercase tracking-[0.2em] text-stone-300">fetching…</span>
+    </div>
+  </div>
+  <main class="relative mx-auto flex max-w-6xl flex-col gap-10 px-6 py-12">
+    <div class="rounded-md bg-stone-950/70 p-8 shadow-surface backdrop-blur-lg sm:p-10 md:p-12">
+      <div class="space-y-10">
+        <%- include('partials/banner') %>
+        <%- include('partials/intro') %>
+        <%- include('partials/controls') %>
+        <%- include('partials/legend') %>
+        <%- include('partials/list') %>
+        <%- include('partials/blocks') %>
+        <%- include('partials/table') %>
+        <%- include('partials/footer') %>
+      </div>
+    </div>
+  </main>
+  <script>
+    const btnTable = document.getElementById("btnTable");
+    const btnList = document.getElementById("btnList");
+    const btnBlocks = document.getElementById("btnBlocks");
+    const viewTable = document.getElementById("viewTable");
+    const viewList = document.getElementById("viewList");
+    const viewBlocks = document.getElementById("viewBlocks");
+
+    const activeClasses = ["bg-stone-700/80","text-stone-100","shadow-md","shadow-black/40"];
+    const inactiveClasses = ["bg-stone-900/70","text-stone-400","hover:bg-stone-800/70"];
+
+    function applyState(button, isActive) {
+      button.classList.remove(...(isActive ? inactiveClasses : activeClasses));
+      button.classList.add(...(isActive ? activeClasses : inactiveClasses));
+      button.setAttribute("aria-pressed", String(isActive));
+    }
+
+    const viewRegistry = {
+      list: { button: btnList, element: viewList },
+      blocks: { button: btnBlocks, element: viewBlocks },
+      table: { button: btnTable, element: viewTable },
+    };
+
+    function setView(mode) {
+      Object.entries(viewRegistry).forEach(([key, { button, element }]) => {
+        const isActive = key === mode;
+        element.classList.toggle("hidden", !isActive);
+        applyState(button, isActive);
+      });
+    }
+
+    btnTable.addEventListener("click", () => setView("table"));
+    btnList.addEventListener("click", () => setView("list"));
+    btnBlocks.addEventListener("click", () => setView("blocks"));
+
+    const starsBadge = document.getElementById("githubStars");
+    if (starsBadge) {
+      fetch("https://api.github.com/repos/volnei/retrace", { headers: { "Accept": "application/vnd.github+json" } })
+        .then((response) => (response.ok ? response.json() : null))
+        .then((data) => {
+          if (!data || typeof data.stargazers_count !== "number") {
+            throw new Error("No star data");
+          }
+          const count = data.stargazers_count;
+          starsBadge.innerHTML = `<span class="text-amber-300">★</span><span class="uppercase tracking-[0.2em] text-stone-300">${count.toLocaleString()} stars</span>`;
+        })
+        .catch(() => {
+          starsBadge.innerHTML = `<span class="text-amber-300">★</span><span class="uppercase tracking-[0.2em] text-stone-300">on github</span>`;
+        });
+    }
+
+    function initializeBlockHighlighting() {
+      const cards = document.querySelectorAll("[data-block-card]");
+      if (cards.length === 0) return;
+
+      const sourceClasses = ["ring-2","ring-stone-300/70","bg-stone-900/55"];
+      const dependentClasses = ["ring-2","ring-orange-500/70","bg-stone-900/60"];
+
+      function clearHighlights() {
+        cards.forEach((card) => {
+          card.classList.remove(...sourceClasses, ...dependentClasses);
+        });
+      }
+
+      function applyHighlights(card) {
+        clearHighlights();
+        card.classList.add(...sourceClasses);
+        const dependents = (card.dataset.dependents || "").split(" ").filter(Boolean);
+        dependents.forEach((pkgId) => {
+          const target = document.querySelector(`[data-block-card][data-pkg="${pkgId}"]`);
+          if (target && target !== card) {
+            target.classList.add(...dependentClasses);
+          }
+        });
+      }
+
+      cards.forEach((card) => {
+        card.addEventListener("mouseenter", () => applyHighlights(card));
+        card.addEventListener("focus", () => applyHighlights(card));
+        card.addEventListener("mouseleave", clearHighlights);
+        card.addEventListener("blur", clearHighlights);
+      });
+    }
+
+    initializeBlockHighlighting();
+    setView("list");
+  </script>
+</body>
+</html>

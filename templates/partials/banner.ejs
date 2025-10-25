@@ -1,0 +1,26 @@
+  <section class="relative overflow-hidden rounded-md border border-stone-800/70 bg-gradient-to-br from-stone-950 via-stone-900 to-stone-950 px-8 py-9 text-stone-200 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.8)]">
+    <div class="pointer-events-none absolute inset-0 opacity-40 mix-blend-color-dodge">
+      <div class="absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(255,255,255,0.1)_0,rgba(255,255,255,0.1)_1px,transparent_1px,transparent_3px)]"></div>
+    </div>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-amber-400 via-pink-400 via-sky-400 to-lime-400 opacity-70"></div>
+    <div class="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-5">
+        <div class="flex h-16 w-16 items-center justify-center rounded border border-amber-400/60 bg-stone-950 text-amber-300 shadow-[0_0_20px_rgba(255,214,165,0.3)]">
+          <span class="text-lg font-normal tracking-wide" style="font-family: 'Press Start 2P', cursive;">RT</span>
+        </div>
+        <div class="space-y-1">
+          <h1 class="text-3xl font-semibold tracking-tight text-stone-100 sm:text-[2.35rem]" style="font-family: 'Press Start 2P', cursive;">
+            RETRACE
+          </h1>
+          <p class="font-mono text-xs uppercase tracking-[0.35em] text-stone-400">
+            monorepo dependency atlas
+          </p>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5 text-right font-mono text-xs uppercase tracking-[0.25em] text-stone-400">
+        <span>Generated <span class="text-stone-100"><%= now %></span></span>
+        <span>Runtime <span class="text-stone-100"><%= nodeVersion %></span></span>
+        <span>Host <span class="text-stone-100"><%= systemInfo %></span></span>
+      </div>
+    </div>
+  </section>

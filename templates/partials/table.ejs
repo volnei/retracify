@@ -1,0 +1,44 @@
+  <div id="viewTable" class="hidden">
+    <div class="overflow-hidden rounded-md bg-stone-950/65 shadow-sm shadow-black/40">
+      <table class="min-w-full divide-y divide-stone-800 text-sm text-stone-200">
+        <thead class="bg-stone-950/80 text-xs font-semibold uppercase tracking-wide text-stone-300">
+          <tr>
+            <th scope="col" class="px-4 py-3 text-left">Package</th>
+            <th scope="col" class="px-4 py-3 text-left">Version</th>
+            <th scope="col" class="px-4 py-3 text-right">Files</th>
+            <th scope="col" class="px-4 py-3 text-right">Deps</th>
+            <th scope="col" class="px-4 py-3 text-right">Refs</th>
+            <th scope="col" class="px-4 py-3 text-right">Cyclic</th>
+            <th scope="col" class="px-4 py-3 text-left">Location</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-900/80">
+          <% packagesView.forEach((pkg, pkgIndex) => {
+            const displayName = pkg.displayName ?? pkg.name ?? `package-${pkgIndex}`;
+            const anchorId = pkg.anchorId
+              ?? (typeof makeId === "function"
+                ? makeId(displayName)
+                : displayName.replace(/[^a-zA-Z0-9-_]/g, "-"));
+          %>
+            <% const toneClass = pkg.cyclicCount > 0 ? "bg-stone-900/60" : (pkg.undeclaredDeps.length > 0 ? "bg-stone-900/55" : "bg-transparent"); %>
+            <tr class="<%= toneClass %>">
+              <td class="px-4 py-3 font-mono text-xs text-stone-200">
+                <div class="flex items-center gap-2">
+                  <a href="#<%= anchorId %>" class="font-semibold text-stone-200 underline decoration-dotted decoration-stone-600 hover:text-stone-100"><%= displayName %></a>
+                  <% if (pkg.isRoot) { %>
+                    <span class="rounded-sm bg-emerald-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-emerald-300">Root</span>
+                  <% } %>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-xs text-stone-400"><%= pkg.version ?? "-" %></td>
+              <td class="px-4 py-3 text-right text-sm font-medium text-stone-100"><%= pkg.fileCount ?? 0 %></td>
+              <td class="px-4 py-3 text-right text-sm font-medium text-stone-100"><%= pkg.dependencies.length %></td>
+              <td class="px-4 py-3 text-right text-sm font-medium text-stone-100"><%= pkg.references %></td>
+              <td class="px-4 py-3 text-right text-sm font-medium <%= pkg.cyclicCount > 0 ? 'text-stone-100' : 'text-stone-300' %>"><%= pkg.cyclicCount %></td>
+              <td class="px-4 py-3 text-xs text-stone-500"><%= pkg.relativeDir ?? "" %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
