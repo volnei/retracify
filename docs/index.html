@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Retracify · Dependency Intelligence for Engineering Leaders</title>
+    <meta
+      name="description"
+      content="Retracify surfaces every dependency inside your JavaScript and TypeScript workspaces, highlights risk, and delivers precise reports engineers can act on within minutes."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "system-ui", "sans-serif"],
+              mono: ["JetBrains Mono", "Menlo", "monospace"],
+            },
+            boxShadow: {
+              surface: "0 22px 48px -28px rgba(8, 15, 28, 0.85)",
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+      }
+      .octo-arm {
+        transform-origin: 130px 106px;
+      }
+      .octo-arm-animate:hover .octo-arm {
+        animation: octocat-wave 560ms ease-in-out;
+      }
+      @keyframes octocat-wave {
+        0%,
+        100% {
+          transform: rotate(0deg);
+        }
+        20%,
+        60% {
+          transform: rotate(-20deg);
+        }
+        40%,
+        80% {
+          transform: rotate(10deg);
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="min-h-screen bg-stone-950 bg-[radial-gradient(circle_at_top,_rgba(120,113,108,0.1),_transparent_60%)] text-stone-200 antialiased"
+  >
+    <a
+      href="https://github.com/volnei/retracify"
+      class="octo-arm-animate hidden sm:block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400/60"
+      target="_blank"
+      rel="noreferrer"
+      aria-label="View source on GitHub"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 250 250"
+        class="absolute right-0 top-0 h-16 w-16 text-white"
+        fill="#151513"
+      >
+        <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#fff" />
+        <path
+          class="octo-arm"
+          d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16"
+          style="transform-origin: 130px 106px"
+        />
+        <path
+          class="octo-body"
+          d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"
+        />
+      </svg>
+    </a>
+    <main class="relative mx-auto flex max-w-6xl flex-col gap-24 px-6 py-16">
+      <header
+        class="grid gap-12 rounded-2xl border border-stone-800/60 bg-stone-950/70 p-10 shadow-surface backdrop-blur-xl lg:grid-cols-[1.1fr_0.9fr] lg:items-center"
+      >
+        <div class="space-y-7">
+          <span
+            class="inline-flex items-center gap-2 rounded-full border border-amber-300/40 bg-amber-300/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-amber-200"
+            >Retracify</span
+          >
+          <h1 class="text-4xl font-semibold text-stone-100 md:text-5xl">
+            Dependency intelligence built by engineers for engineers.
+          </h1>
+          <p class="max-w-xl text-lg text-stone-400">
+            Retracify inspects every workspace package, maps concrete import flows,
+            and emits artefacts you can drop into reviews, RFCs, or CI without
+            touching a spreadsheet or bespoke dashboard.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a
+              class="rounded-lg bg-amber-300/90 px-6 py-3 text-sm font-semibold text-stone-950 transition hover:bg-amber-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
+              href="https://www.npmjs.com/package/retracify"
+              target="_blank"
+              rel="noopener"
+              >Install via npm</a
+            >
+            <a
+              class="rounded-lg border border-stone-700/70 px-6 py-3 text-sm font-semibold text-stone-100 transition hover:border-stone-500 hover:text-amber-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
+              href="https://github.com/volnei/retracify"
+              target="_blank"
+              rel="noopener"
+              >View on GitHub</a
+            >
+          </div>
+          <dl class="grid gap-3 text-sm text-stone-500 sm:grid-cols-3">
+            <div>
+              <dt class="font-medium text-stone-300">Setup</dt>
+              <dd>Under five minutes locally</dd>
+            </div>
+            <div>
+              <dt class="font-medium text-stone-300">Monorepos</dt>
+              <dd>pnpm, npm, Yarn, aliases</dd>
+            </div>
+            <div>
+              <dt class="font-medium text-stone-300">License</dt>
+              <dd>MIT, open source</dd>
+            </div>
+          </dl>
+        </div>
+        <div
+          class="rounded-xl border border-stone-800/80 bg-stone-950/80 p-6 shadow-[0_24px_40px_-28px_rgba(8,15,28,0.9)]"
+        >
+          <div class="flex items-center justify-between text-xs text-stone-500">
+            <span class="inline-flex items-center gap-2 font-mono"
+              ><span class="h-2 w-2 rounded-full bg-emerald-400"></span
+              >retracify report</span
+            >
+            <span>workspace snapshot</span>
+          </div>
+          <div class="mt-6 grid gap-5 text-sm">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">
+                Workspace Health
+              </p>
+              <div class="mt-2 grid grid-cols-3 gap-3">
+                <div class="rounded-md border border-stone-800/60 p-3">
+                  <p class="text-2xl font-semibold text-stone-100">42</p>
+                  <p class="text-xs text-stone-500">packages analysed</p>
+                </div>
+                <div class="rounded-md border border-stone-800/60 p-3">
+                  <p class="text-2xl font-semibold text-stone-100">0</p>
+                  <p class="text-xs text-stone-500">critical blockers</p>
+                </div>
+                <div class="rounded-md border border-stone-800/60 p-3">
+                  <p class="text-2xl font-semibold text-stone-100">132</p>
+                  <p class="text-xs text-stone-500">module edges mapped</p>
+                </div>
+              </div>
+            </div>
+            <div class="rounded-md border border-stone-800/60 bg-stone-950/70 p-4">
+              <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">
+                Key alerts
+              </p>
+              <ul class="mt-2 space-y-1 font-mono text-xs text-amber-200">
+                <li>@workspace/cart → @workspace/payments (cycle)</li>
+                <li>@workspace/ui · 3 undeclared dependants</li>
+              </ul>
+            </div>
+            <pre
+              class="overflow-x-auto rounded-md border border-amber-300/30 bg-amber-300/10 p-4 text-xs text-amber-200"
+            ><code>npx retracify .
+# generates retracify.html</code></pre>
+          </div>
+        </div>
+      </header>
+
+      <section class="space-y-10">
+        <div class="space-y-4 text-center">
+          <h2 class="text-3xl font-semibold text-stone-100">
+            Evidence for engineering discussions, not marketing slides.
+          </h2>
+          <p class="mx-auto max-w-3xl text-base text-stone-400">
+            Retracify takes the graph your IDE hints at and turns it into precise,
+            queryable data. Swap hand-waving around “ownership” with concrete edges,
+            usage counts, and external surface area that any engineer can verify.
+          </p>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <article
+            class="rounded-xl border border-stone-800/60 bg-stone-950/70 p-6 shadow-surface"
+          >
+            <h3 class="text-lg font-semibold text-stone-100">
+              Actionable graph insight
+            </h3>
+            <p class="mt-3 text-sm text-stone-400">
+              Consume the same edges the CLI analyses. No inferred heuristics—just
+              real import relationships with counts you can trace back to files.
+            </p>
+          </article>
+          <article
+            class="rounded-xl border border-stone-800/60 bg-stone-950/70 p-6 shadow-surface"
+          >
+            <h3 class="text-lg font-semibold text-stone-100">
+              Cycle + drift detection
+            </h3>
+            <p class="mt-3 text-sm text-stone-400">
+              Highlight strongly connected components, undeclared dependants, and
+              dead installs before they surface as production fires.
+            </p>
+          </article>
+          <article
+            class="rounded-xl border border-stone-800/60 bg-stone-950/70 p-6 shadow-surface"
+          >
+            <h3 class="text-lg font-semibold text-stone-100">
+              Workspace native
+            </h3>
+            <p class="mt-3 text-sm text-stone-400">
+              Understands pnpm/npm/Yarn layouts, honours `tsconfig` aliases, and
+              keeps nested workspaces isolated so parent modules stay clean.
+            </p>
+          </article>
+          <article
+            class="rounded-xl border border-stone-800/60 bg-stone-950/70 p-6 shadow-surface"
+          >
+            <h3 class="text-lg font-semibold text-stone-100">
+              Automation ready
+            </h3>
+            <p class="mt-3 text-sm text-stone-400">
+              Emit JSON identical to the dashboard payload so your pipelines, bots,
+              or scorecards operate on the exact same facts as the UI.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="rounded-2xl border border-stone-800/60 bg-stone-950/70 p-10 shadow-surface"
+      >
+        <div class="space-y-4 text-center">
+          <h2 class="text-3xl font-semibold text-stone-100">
+            How engineering teams plug Retracify into their workflow
+          </h2>
+          <p class="mx-auto max-w-2xl text-base text-stone-400">
+            Platform engineers, tech leads, and ICs rely on Retracify for a shared
+            source of truth—without dragging crews into yet another dashboard tool.
+          </p>
+        </div>
+        <div class="mt-10 grid gap-6 md:grid-cols-3">
+          <div
+            class="rounded-xl border border-stone-800/60 bg-stone-950/60 p-6 text-left"
+          >
+            <span class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-200"
+              >Step 01</span
+            >
+            <h3 class="mt-4 text-xl font-semibold text-stone-100">
+              Scan any repository
+            </h3>
+            <p class="mt-3 text-sm text-stone-400">
+              Point Retracify at the repo root. It enumerates every package,
+              respects ignore patterns, resolves aliases, and inspects actual import
+              usage.
+            </p>
+          </div>
+          <div
+            class="rounded-xl border border-stone-800/60 bg-stone-950/60 p-6 text-left"
+          >
+            <span class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-200"
+              >Step 02</span
+            >
+            <h3 class="mt-4 text-xl font-semibold text-stone-100">
+              Review actionable insight
+            </h3>
+            <p class="mt-3 text-sm text-stone-400">
+              Cycles, undeclared usage, tooling footprint, and reference counts are
+              surfaced with the evidence required to justify refactors or guardrails.
+            </p>
+          </div>
+          <div
+            class="rounded-xl border border-stone-800/60 bg-stone-950/60 p-6 text-left"
+          >
+            <span class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-200"
+              >Step 03</span
+            >
+            <h3 class="mt-4 text-xl font-semibold text-stone-100">
+              Share or automate
+            </h3>
+            <p class="mt-3 text-sm text-stone-400">
+              Commit the HTML artefact alongside RFCs or wire the JSON into CI to
+              fail builds when cycles or undeclared dependants reappear.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="rounded-2xl border border-amber-300/30 bg-amber-300/10 p-10 text-center shadow-surface"
+      >
+        <h2 class="text-3xl font-semibold text-amber-50">
+          Keep shipping fast without losing dependency discipline.
+        </h2>
+        <p class="mt-4 max-w-2xl text-sm text-amber-100/80 md:mx-auto">
+          Retracify is open source, local-first, and tuned for engineers who want
+          hard data instead of guesswork. Run it whenever you touch a dependency
+          graph and keep the output close to the code.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a
+            class="rounded-lg bg-amber-300/90 px-6 py-3 text-sm font-semibold text-stone-950 transition hover:bg-amber-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
+            href="https://github.com/volnei/retracify"
+            target="_blank"
+            rel="noopener"
+            >Start on GitHub</a
+          >
+          <a
+            class="rounded-lg border border-amber-300/40 px-6 py-3 text-sm font-semibold text-amber-100 transition hover:border-amber-200 hover:text-amber-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-200"
+            href="https://www.npmjs.com/package/retracify"
+            target="_blank"
+            rel="noopener"
+            >Read the documentation</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-stone-900/70 bg-stone-950/90 py-8">
+      <div class="mx-auto flex max-w-6xl flex-col items-center gap-2 px-6 text-center text-sm text-stone-500 sm:flex-row sm:justify-between sm:text-left">
+        <p>
+          © <span id="year"></span> Retracify. Built for engineering organisations
+          that pursue speed with control.
+        </p>
+        <p class="flex items-center gap-3 text-stone-400">
+          <a
+            class="transition hover:text-amber-200"
+            href="https://github.com/volnei/retracify"
+            target="_blank"
+            rel="noopener"
+            >GitHub</a
+          >
+          <span class="text-stone-700">•</span>
+          <a
+            class="transition hover:text-amber-200"
+            href="https://www.npmjs.com/package/retracify"
+            target="_blank"
+            rel="noopener"
+            >npm</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const year = new Date().getFullYear();
+      const yearEl = document.getElementById("year");
+      if (yearEl) yearEl.textContent = String(year);
+    </script>
+  </body>
+</html>
