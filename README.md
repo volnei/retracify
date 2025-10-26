@@ -78,6 +78,10 @@ npx retracify . report.json --json
 retracify ./apps/catalog analytics.retracify.html
 ```
 
+### Sample report
+
+- [HTML example](https://volnei.github.io/retracify/sample-report.retracify.html) — generated from this repository to showcase the default dashboard styling and metadata.
+
 ---
 
 ## Reports that engineers actually use
