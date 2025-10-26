@@ -40,7 +40,7 @@
   }
 </style>
 </head>
-<body class="min-h-screen bg-stone-950 bg-[radial-gradient(circle_at_top,_rgba(120,113,108,0.1),_transparent_60%)] text-stone-200 antialiased">
+<body class="min-h-screen bg-slate-950 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.08),_transparent_60%)] text-stone-200 antialiased">
   <a href="https://github.com/volnei/retracify" class="github-corner absolute right-0 top-0 z-40" aria-label="View source on GitHub" target="_blank" rel="noreferrer">
     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
     <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#fff"/>
@@ -139,7 +139,7 @@
         <div id="app-root" class="space-y-8">
           <div class="flex w-full justify-center py-16">
             <div class="flex flex-col items-center gap-3 text-sm text-stone-400">
-              <div class="h-10 w-10 animate-spin rounded-full border-2 border-amber-300/60 border-t-transparent"></div>
+          <div class="h-10 w-10 animate-spin rounded-full border-2 border-sky-400/60 border-t-transparent"></div>
               <p>Loading interactive overview…</p>
             </div>
           </div>
@@ -229,10 +229,10 @@
             throw new Error("No star data");
           }
           const count = data.stargazers_count;
-          starsBadge.innerHTML = `<span class="text-amber-300">★</span><span class="uppercase tracking-[0.2em] text-stone-300">${count.toLocaleString()} stars</span>`;
+        starsBadge.innerHTML = `<span class="text-sky-300">★</span><span class="uppercase tracking-[0.2em] text-stone-300">${count.toLocaleString()} stars</span>`;
         })
         .catch(() => {
-          starsBadge.innerHTML = `<span class="text-amber-300">★</span><span class="uppercase tracking-[0.2em] text-stone-300">on github</span>`;
+        starsBadge.innerHTML = `<span class="text-sky-300">★</span><span class="uppercase tracking-[0.2em] text-stone-300">on github</span>`;
         });
     }
 
@@ -248,7 +248,7 @@
       });
     }
   </script>
-  <script id="reportData" type="application/json">{"summary":{"packageCount":1,"dependencyCount":0,"cyclicDependencyCount":0,"undeclaredDependencyCount":0,"runtimeExternalCount":7,"toolingExternalCount":7,"typeExternalCount":2,"toolingDependencyCount":7,"packagesWithIssues":1,"averageDependencyCount":0,"averageToolingDeps":7},"packages":[{"name":"retracify","version":"0.1.0","description":"Generate interactive dependency reports for workspaces and standalone projects.","fileCount":14,"relativeDir":"","isRoot":true,"hasChildPackages":false,"hasTailwindConfig":false,"hasTsconfig":true,"hasAutoprefixer":false,"hasEslintConfig":true,"dependencies":[],"declaredDeps":[],"undeclaredDeps":[],"references":0,"cyclicDeps":[],"externalDependencies":[{"name":"chalk","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"ejs","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"fast-glob","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"ora","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"ts-morph","isDeclared":true,"isUsed":true,"usageCount":2,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"@eslint/js","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"@types/ejs","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":true,"isToolingOnly":false},{"name":"@types/node","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":true,"isToolingOnly":false},{"name":"@vitest/coverage-v8","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"eslint","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"eslint-config-prettier","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"prettier","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"tsx","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"typescript","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"typescript-eslint","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"vitest","isDeclared":true,"isUsed":true,"usageCount":6,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true}],"undeclaredExternalDeps":[],"unusedExternalDeps":["@vitest/coverage-v8"],"toolingDeps":["typescript","tsx","eslint","prettier","vitest","@eslint/js","eslint-config-prettier"],"displayName":"retracify","anchorId":"retracify","cyclicCount":0,"runtimeExternalCount":7,"toolingExternalCount":7,"typeExternalCount":2,"toolingDepsList":["@eslint/js","eslint","eslint-config-prettier","prettier","tsx","typescript","vitest"],"hasIssues":true,"dependencyBadges":[],"externalDependencyBadges":[{"name":"chalk","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"ejs","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"fast-glob","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"ora","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"ts-morph","isDeclared":true,"isUsed":true,"usageCount":2,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"@eslint/js","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"@types/ejs","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":true,"isToolingOnly":false,"statusLabel":"Declared • Type-only","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":true},{"name":"@types/node","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":true,"isToolingOnly":false,"statusLabel":"Declared • Type-only","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":true},{"name":"@vitest/coverage-v8","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Unused","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"eslint","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true,"statusLabel":"Declared • Tooling","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"eslint-config-prettier","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"prettier","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true,"statusLabel":"Declared • Tooling","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"tsx","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true,"statusLabel":"Declared • Tooling","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"typescript","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true,"statusLabel":"Declared • Tooling","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"typescript-eslint","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"vitest","isDeclared":true,"isUsed":true,"usageCount":6,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false}],"unusedExternalCount":1,"undeclaredExternalCount":0}],"meta":{"rootDir":"/Users/volnei/Projects/mono-deps-report","generatedAt":"10/26/2025, 9:33:29 AM","systemInfo":"Darwin 24.6.0 (arm64)","nodeVersion":"v20.19.4"}}</script>
+  <script id="reportData" type="application/json">{"summary":{"packageCount":1,"dependencyCount":0,"cyclicDependencyCount":0,"undeclaredDependencyCount":0,"runtimeExternalCount":7,"toolingExternalCount":7,"typeExternalCount":2,"toolingDependencyCount":7,"packagesWithIssues":1,"averageDependencyCount":0,"averageToolingDeps":7},"packages":[{"name":"retracify","version":"0.1.0","description":"Generate interactive dependency reports for workspaces and standalone projects.","fileCount":14,"relativeDir":"","isRoot":true,"hasChildPackages":false,"hasTailwindConfig":false,"hasTsconfig":true,"hasAutoprefixer":false,"hasEslintConfig":true,"dependencies":[],"declaredDeps":[],"undeclaredDeps":[],"references":0,"cyclicDeps":[],"externalDependencies":[{"name":"chalk","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"ejs","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"fast-glob","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"ora","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"ts-morph","isDeclared":true,"isUsed":true,"usageCount":2,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"@eslint/js","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"@types/ejs","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":true,"isToolingOnly":false},{"name":"@types/node","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":true,"isToolingOnly":false},{"name":"@vitest/coverage-v8","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"eslint","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"eslint-config-prettier","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"prettier","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"tsx","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"typescript","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true},{"name":"typescript-eslint","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false},{"name":"vitest","isDeclared":true,"isUsed":true,"usageCount":6,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true}],"undeclaredExternalDeps":[],"unusedExternalDeps":["@vitest/coverage-v8"],"toolingDeps":["typescript","tsx","eslint","prettier","vitest","@eslint/js","eslint-config-prettier"],"displayName":"retracify","anchorId":"retracify","cyclicCount":0,"runtimeExternalCount":7,"toolingExternalCount":7,"typeExternalCount":2,"toolingDepsList":["@eslint/js","eslint","eslint-config-prettier","prettier","tsx","typescript","vitest"],"hasIssues":true,"dependencyBadges":[],"externalDependencyBadges":[{"name":"chalk","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"ejs","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"fast-glob","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"ora","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"ts-morph","isDeclared":true,"isUsed":true,"usageCount":2,"declaredInDependencies":true,"declaredInDevDependencies":false,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Prod","scopeToneClass":"bg-emerald-500/20 text-emerald-100","isTypeOnly":false},{"name":"@eslint/js","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"@types/ejs","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":true,"isToolingOnly":false,"statusLabel":"Declared • Type-only","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":true},{"name":"@types/node","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":true,"isToolingOnly":false,"statusLabel":"Declared • Type-only","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":true},{"name":"@vitest/coverage-v8","isDeclared":true,"isUsed":false,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Unused","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"eslint","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true,"statusLabel":"Declared • Tooling","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"eslint-config-prettier","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"prettier","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true,"statusLabel":"Declared • Tooling","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"tsx","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true,"statusLabel":"Declared • Tooling","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"typescript","isDeclared":true,"isUsed":true,"usageCount":0,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":true,"statusLabel":"Declared • Tooling","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"typescript-eslint","isDeclared":true,"isUsed":true,"usageCount":1,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false},{"name":"vitest","isDeclared":true,"isUsed":true,"usageCount":6,"declaredInDependencies":false,"declaredInDevDependencies":true,"isLikelyTypePackage":false,"isToolingOnly":false,"statusLabel":"Declared • Used","scopeLabel":"Dev","scopeToneClass":"bg-sky-500/25 text-sky-100","isTypeOnly":false}],"unusedExternalCount":1,"undeclaredExternalCount":0}],"meta":{"rootDir":"/Users/volnei/Projects/mono-deps-report","generatedAt":"10/26/2025, 12:21:53 PM","systemInfo":"Darwin 24.6.0 (arm64)","nodeVersion":"v20.19.4"}}</script>
   <script type="module">
     import { h, render } from "https://esm.sh/preact@10.19.3";
     import { html } from "https://esm.sh/htm@3.1.1/preact";
@@ -294,7 +294,7 @@
       meta: { ...fallbackPayload.meta, ...(parsedPayload.meta || {}) },
     };
 
-    const buttonBase = "rounded-lg px-5 py-2.5 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400/60";
+    const buttonBase = "flex w-full items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium transition-colors sm:w-auto sm:px-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/60";
 
     const SummaryCards = ({ summary, meta }) => html`
       <section class="space-y-4">
@@ -314,7 +314,7 @@
             <p class="text-xs font-semibold uppercase tracking-wide text-stone-400">Packages</p>
             <p class="text-lg font-semibold text-stone-100">
               ${summary.packageCount}
-              <span class="text-sm font-medium text-amber-400/80">• ${summary.packagesWithIssues} need attention</span>
+              <span class="text-sm font-medium text-sky-300/80">• ${summary.packagesWithIssues} need attention</span>
             </p>
             <p class="text-xs text-stone-500">Root directory: <span class="text-stone-200">${meta.rootDir}</span></p>
           </div>
@@ -343,16 +343,16 @@
     `;
 
     const ViewToggle = ({ view, onChange }) => html`
-      <div class="inline-flex items-center gap-3 rounded-xl border border-stone-800/60 bg-stone-950/80 p-2">
+      <div class="flex flex-col items-stretch gap-2 rounded-xl border border-stone-800/60 bg-stone-950/80 p-2 sm:inline-flex sm:flex-row sm:items-center sm:gap-3">
         <button
           type="button"
-          class=${cx(buttonBase, view === "list" ? "bg-amber-300/15 text-amber-100 shadow-[0_12px_30px_-18px_rgba(251,191,36,0.6)]" : "bg-stone-900/70 text-stone-400 hover:text-stone-100")}
+          class=${cx(buttonBase, view === "list" ? "bg-sky-500/15 text-sky-100" : "bg-stone-900/70 text-stone-400 hover:text-stone-200")}
           aria-pressed=${view === "list"}
           onClick=${() => onChange("list")}
         >List View</button>
         <button
           type="button"
-          class=${cx(buttonBase, view === "blocks" ? "bg-amber-300/15 text-amber-100 shadow-[0_12px_30px_-18px_rgba(251,191,36,0.6)]" : "bg-stone-900/70 text-stone-400 hover:text-stone-100")}
+          class=${cx(buttonBase, view === "blocks" ? "bg-sky-500/15 text-sky-100" : "bg-stone-900/70 text-stone-400 hover:text-stone-200")}
           aria-pressed=${view === "blocks"}
           onClick=${() => onChange("blocks")}
         >Blocks View</button>
@@ -360,13 +360,13 @@
     `;
 
     const filterOptions = [
-      { id: "all", label: "All packages", accent: "bg-stone-700/60" },
-      { id: "issues", label: "Needs attention", accent: "bg-red-500/40" },
-      { id: "tooling", label: "Has tooling", accent: "bg-blue-500/40" },
+      { id: "all", label: "All packages", accent: "bg-stone-800/60 text-stone-300" },
+      { id: "issues", label: "Needs attention", accent: "bg-rose-500/15 text-rose-200" },
+      { id: "tooling", label: "Has tooling", accent: "bg-sky-500/15 text-sky-200" },
     ];
 
     const FilterBar = ({ filter, setFilter, search, setSearch, counts }) => html`
-      <div class="flex flex-col gap-4 rounded-xl border border-stone-800/60 bg-stone-950/80 p-4">
+      <div class="flex flex-col gap-4 rounded-xl border border-stone-800/60 bg-stone-950/80 p-3 sm:p-4">
         <div class="grid gap-3 sm:grid-cols-3">
           ${filterOptions.map(({ id, label, accent }) => {
             const isActive = filter === id;
@@ -375,16 +375,16 @@
                 key=${id}
                 type="button"
                 class=${cx(
-                  "flex flex-col items-start gap-1 rounded-xl border px-4 py-3 text-left transition",
+                  "flex w-full flex-col items-start gap-1 rounded-xl border px-4 py-3 text-left transition",
                   isActive
-                    ? "border-amber-400/70 bg-amber-300/10 text-amber-100 shadow-[0_18px_40px_-25px_rgba(251,191,36,0.45)]"
-                    : "border-stone-800/60 bg-stone-900/70 text-stone-300 hover:border-amber-300/40 hover:text-stone-100"
+                    ? "border-sky-400/70 bg-sky-500/10 text-sky-100"
+                    : "border-stone-800/60 bg-stone-900/70 text-stone-300 hover:border-sky-300/40 hover:text-stone-100"
                 )}
                 onClick=${() => setFilter(id)}
               >
                 <span class=${cx(
                   "inline-flex items-center gap-2 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-                  isActive ? "bg-amber-300/25 text-amber-100" : accent
+                  isActive ? "bg-sky-500/20 text-sky-100" : accent
                 )}>${label}</span>
                 <span class="text-lg font-semibold text-stone-100">${counts[id] ?? 0}</span>
                 <span class="text-xs text-stone-500">${id === "all" ? "Total packages" : id === "issues" ? "Missing deps or unused externals" : "Configs or scripts detected"}</span>
@@ -571,13 +571,13 @@
               const isSelected = selected === pkg.name;
               const isHovered = !isSelected && hovered === pkg.name;
               const isDependent = Boolean(focusKey) && activeDependents.has(pkg.anchorId);
-              const baseClass = "block-card relative flex min-h-[96px] flex-col justify-between gap-4 rounded-lg border border-stone-800/60 bg-stone-950/70 px-5 py-4 shadow-sm shadow-black/30 transition duration-150";
+              const baseClass = "block-card relative flex min-h-[88px] flex-col justify-between gap-4 rounded-lg border border-stone-800/60 bg-stone-950/70 px-4 py-3 shadow-sm shadow-black/30 transition duration-150 sm:min-h-[96px] sm:px-5 sm:py-4";
               const highlightClass = isSelected
-                ? "ring-2 ring-stone-200/80 bg-stone-900/55"
+                ? "ring-2 ring-sky-300/70 bg-stone-900/55"
                 : isDependent
-                  ? "ring-2 ring-orange-500/70 bg-stone-900/60"
+                  ? "ring-2 ring-rose-400/70 bg-stone-900/60"
                   : isHovered
-                    ? "ring-1 ring-stone-700/70 bg-stone-900/60"
+                    ? "ring-1 ring-stone-700/60 bg-stone-900/60"
                     : "hover:-translate-y-0.5 hover:bg-stone-900/65";
               return html`
                 <article
@@ -646,7 +646,7 @@
                   </div>
                   <button
                     type="button"
-                    class="rounded-md border border-stone-800/60 px-3 py-1.5 text-xs font-medium text-stone-300 transition hover:border-stone-600 hover:text-amber-200"
+                    class="self-start rounded-md border border-stone-800/60 px-3 py-1.5 text-xs font-medium text-stone-300 transition hover:border-stone-600 hover:text-sky-200 sm:self-auto"
                     onClick=${() => setSelected(null)}
                   >
                     Clear selection
