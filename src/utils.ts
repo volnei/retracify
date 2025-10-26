@@ -639,9 +639,14 @@ export async function renderHtmlReport(
   }).replace(/</g, "\\u003c");
 
   const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-  const bundledTemplatesDir = path.resolve(moduleDir, "../templates");
   const templateCandidates = ["reports.ejs", "report.ejs"];
-  const searchDirs = [bundledTemplatesDir];
+  const bundledTemplateDirs = [
+    path.resolve(moduleDir, "../templates"),
+    path.resolve(moduleDir, "templates"),
+  ];
+  const searchDirs = Array.from(
+    new Set(bundledTemplateDirs.filter((dir) => dir && typeof dir === "string")),
+  );
 
   const projectTemplatesDir = path.resolve(projectRoot, "templates");
   if (!searchDirs.includes(projectTemplatesDir)) {

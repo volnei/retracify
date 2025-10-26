@@ -4,9 +4,6 @@
   <a href="https://github.com/volnei/retracify/actions/workflows/ci.yml">
     <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/volnei/retracify/ci.yml?branch=main&logo=github&label=CI&style=flat-square">
   </a>
-  <a href="https://codecov.io/github/volnei/retracify">
-    <img alt="Coverage" src="https://img.shields.io/codecov/c/github/volnei/retracify?logo=codecov&style=flat-square">
-  </a>
   <a href="https://www.npmjs.com/package/retracify">
     <img alt="npm version" src="https://img.shields.io/npm/v/retracify?color=cb3837&logo=npm&style=flat-square">
   </a>

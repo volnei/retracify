@@ -15,7 +15,7 @@
     "retracify": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc && cp -R templates dist/templates",
+    "build": "tsc",
     "start": "tsx src/index.ts",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
