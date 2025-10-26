@@ -23,10 +23,10 @@ function renderCliBanner() {
 
   const lines = [
     `┏${"━".repeat(innerWidth)}┓`,
-    `┃┌${"─".repeat(innerWidth - 2)}┐┃`,
-    `┃│${padCenter("RETRACIFY", innerWidth - 2)}│┃`,
-    `┃│${padCenter("dependency graphs made simple", innerWidth - 2)}│┃`,
-    `┃└${"─".repeat(innerWidth - 2)}┘┃`,
+    `┃ ┏${"━".repeat(innerWidth - 4)}┓ ┃`,
+    `┃ ┃${padCenter("RETRACIFY", innerWidth - 4)}┃ ┃`,
+    `┃ ┃${padCenter("dependency graphs made simple", innerWidth - 4)}┃ ┃`,
+    `┃ ┗${"━".repeat(innerWidth - 4)}┛ ┃`,
     `┗${"━".repeat(innerWidth)}┛`,
   ];
 

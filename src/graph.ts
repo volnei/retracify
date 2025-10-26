@@ -114,6 +114,7 @@ export async function analyzeImportGraph(
   cyclicEdges: Set<string>;
   referenceCount: Record<string, number>;
   externalReferenceCount: Record<string, Record<string, number>>;
+  dependencyOrigins: Map<string, Map<string, Set<string>>>;
 }> {
   let aliasResolvers: TsconfigAliasResolver[] = [];
   let onProgress: ProgressCallback | undefined;
@@ -160,6 +161,7 @@ export async function analyzeImportGraph(
   const edges: EdgeMap = new Map();
   const referenceCount: Record<string, number> = {};
   const externalReferenceCount: Record<string, Record<string, number>> = {};
+  const dependencyOrigins: Map<string, Map<string, Set<string>>> = new Map();
 
   for (let i = 0; i < total; i++) {
     const filePath = files[i];
@@ -174,6 +176,17 @@ export async function analyzeImportGraph(
     const sourceFile = project.addSourceFileAtPath(filePath);
     const fromPkg = resolvePackageForFile(filePath, pkgDirMap);
     if (!fromPkg) continue;
+
+    const recordInternalDependency = (target: string) => {
+      if (!dependencyOrigins.has(fromPkg)) {
+        dependencyOrigins.set(fromPkg, new Map());
+      }
+      const targetMap = dependencyOrigins.get(fromPkg)!;
+      if (!targetMap.has(target)) {
+        targetMap.set(target, new Set());
+      }
+      targetMap.get(target)!.add(path.resolve(filePath));
+    };
 
     const processImport = (spec: string) => {
       if (!spec) return;
@@ -207,6 +220,7 @@ export async function analyzeImportGraph(
           if (!edges.has(fromPkg)) edges.set(fromPkg, new Set());
           edges.get(fromPkg)!.add(aliasPkg);
           referenceCount[aliasPkg] = (referenceCount[aliasPkg] || 0) + 1;
+          recordInternalDependency(aliasPkg);
           return;
         }
       }
@@ -216,6 +230,7 @@ export async function analyzeImportGraph(
         if (!edges.has(fromPkg)) edges.set(fromPkg, new Set());
         edges.get(fromPkg)!.add(target);
         referenceCount[target] = (referenceCount[target] || 0) + 1;
+        recordInternalDependency(target);
         return;
       }
 
@@ -308,7 +323,7 @@ export async function analyzeImportGraph(
 
   onProgress?.(`Finished analyzing ${total} files`, 80);
   const cyclicEdges = identifyCyclicEdges(edges, onProgress);
-  return { edges, cyclicEdges, referenceCount, externalReferenceCount };
+  return { edges, cyclicEdges, referenceCount, externalReferenceCount, dependencyOrigins };
 }
 
 // High-level orchestrator: discover packages, analyze imports, and assemble the
@@ -331,6 +346,11 @@ export async function generateDependencyReport({
     cyclicDeps: string[];
     declaredDeps: string[];
     undeclaredDeps: string[];
+    dependencyDetails: {
+      name: string;
+      files: string[];
+      fileCount: number;
+    }[];
     fileCount?: number;
     hasTsconfig?: boolean;
     hasTailwindConfig?: boolean;
@@ -365,7 +385,7 @@ export async function generateDependencyReport({
     resolvedRoot,
     exclude,
   );
-  const { edges, cyclicEdges, referenceCount, externalReferenceCount } =
+  const { edges, cyclicEdges, referenceCount, externalReferenceCount, dependencyOrigins } =
     await analyzeImportGraph(
       resolvedRoot,
       pkgs,
@@ -428,6 +448,26 @@ export async function generateDependencyReport({
       ]);
       const declaredDeps = deps.filter((d) => declaredSet.has(d));
       const undeclaredDeps = deps.filter((d) => !declaredSet.has(d));
+      const dependencyOriginsForPkg = dependencyOrigins.get(p.name);
+      const dependencyDetails = deps.map((dep) => {
+        const originFiles = dependencyOriginsForPkg?.get(dep);
+        const files = originFiles
+          ? Array.from(originFiles).map((file) => {
+              const relativeToPkg = path.relative(resolvedDir, file);
+              const relative =
+                relativeToPkg && !relativeToPkg.startsWith("..")
+                  ? relativeToPkg
+                  : path.relative(resolvedRoot, file);
+              return relative.replace(/\\/g, "/");
+            })
+          : [];
+        const uniqueFiles = Array.from(new Set(files)).sort();
+        return {
+          name: dep,
+          files: uniqueFiles,
+          fileCount: uniqueFiles.length,
+        };
+      });
 
       const externalUsage = externalReferenceCount[p.name] || {};
       const toolingDepSet = new Set(
@@ -552,6 +592,7 @@ export async function generateDependencyReport({
         undeclaredDeps,
         references: referenceCount[p.name] || 0,
         cyclicDeps: directCyclicDeps,
+        dependencyDetails,
         externalDependencies: filteredExternalDependencies,
         undeclaredExternalDeps,
         unusedExternalDeps,

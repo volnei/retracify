@@ -1,29 +1,24 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Retracify · Dependency Intelligence for Engineering Leaders</title>
+    <title>Retracify · Dependency Intelligence for Engineering Teams</title>
     <meta
       name="description"
-      content="Retracify surfaces every dependency inside your JavaScript and TypeScript workspaces, highlights risk, and delivers precise reports engineers can act on within minutes."
+      content="Retracify scans your monorepo, maps real import relationships, and produces actionable dependency intelligence for engineers."
     />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/geist" />
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/geist-mono" />
     <script>
-      tailwind.config = {
+      window.tailwind = window.tailwind || {};
+      window.tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
-              sans: ["Inter", "system-ui", "sans-serif"],
-              mono: ["JetBrains Mono", "Menlo", "monospace"],
-            },
-            boxShadow: {
-              surface: "0 22px 48px -28px rgba(8, 15, 28, 0.85)",
+              sans: ["Geist", "Inter", "system-ui", "sans-serif"],
+              mono: ["Geist Mono", "JetBrains Mono", "Menlo", "monospace"],
             },
           },
         },
@@ -35,7 +30,10 @@
         color-scheme: dark;
       }
       body {
-        font-family: "Inter", system-ui, sans-serif;
+        font-family: "Geist", system-ui, sans-serif;
+        background: radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 60%),
+          #09090b;
+        color: #fafafa;
       }
       .octo-arm {
         transform-origin: 130px 106px;
@@ -50,21 +48,19 @@
         }
         20%,
         60% {
-          transform: rotate(-20deg);
+          transform: rotate(-18deg);
         }
         40%,
         80% {
-          transform: rotate(10deg);
+          transform: rotate(12deg);
         }
       }
     </style>
   </head>
-  <body
-    class="min-h-screen bg-slate-950 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.08),_transparent_60%)] text-stone-200 antialiased"
-  >
+  <body class="min-h-screen antialiased">
     <a
       href="https://github.com/volnei/retracify"
-      class="octo-arm-animate hidden sm:block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/60"
+      class="octo-arm-animate hidden sm:block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500/60"
       target="_blank"
       rel="noreferrer"
       aria-label="View source on GitHub"
@@ -79,7 +75,6 @@
         <path
           class="octo-arm"
           d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16"
-          style="transform-origin: 130px 106px"
         />
         <path
           class="octo-body"
@@ -87,102 +82,101 @@
         />
       </svg>
     </a>
-    <main class="relative mx-auto flex max-w-6xl flex-col gap-16 px-4 py-12 sm:gap-20 sm:px-6 sm:py-16 lg:gap-24">
+
+    <div class="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.08),transparent_60%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,0.04),transparent_55%),linear-gradient(to_bottom,#09090b,#050505)]"></div>
+    <div class="pointer-events-none fixed inset-0 z-[1] bg-[radial-gradient(circle_at_center,rgba(39,39,42,0.12),transparent_60%)]"></div>
+    <main class="relative z-[2] mx-auto flex w-full max-w-6xl flex-col gap-20 px-4 py-12 sm:px-6 sm:py-16">
       <header
-        class="grid gap-10 rounded-2xl border border-stone-800/60 bg-slate-950/75 p-6 shadow-surface backdrop-blur-xl sm:gap-12 sm:p-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:p-10"
+        class="grid gap-12 rounded-3xl border border-zinc-800/70 bg-[rgba(15,15,18,0.9)] p-6 backdrop-blur-sm sm:p-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center"
       >
-        <div class="space-y-6 text-center sm:space-y-7 sm:text-left">
-          <span
-            class="inline-flex items-center gap-2 rounded-full border border-sky-400/35 bg-sky-500/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-sky-200"
-            >Retracify</span
-          >
-          <h1 class="text-3xl font-semibold text-stone-100 sm:text-4xl md:text-5xl">
-            Dependency intelligence built by engineers for engineers.
+        <div class="space-y-7 text-center sm:text-left">
+          <div class="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-4 py-1 text-[11px] font-medium uppercase tracking-[0.28em] text-zinc-400 font-['JetBrains_Mono','Geist_Mono','monospace']">
+            Retracify
+          </div>
+          <h1 class="text-4xl font-semibold text-zinc-100 sm:text-[42px] sm:leading-[1.08] font-['JetBrains_Mono','Geist_Mono','monospace']">
+            Dependency intelligence designed for modern engineering teams.
           </h1>
-          <p class="mx-auto max-w-xl text-base text-stone-400 sm:mx-0 sm:text-lg">
-            Retracify inspects every workspace package, maps concrete import flows,
-            and emits artefacts you can drop into reviews, RFCs, or CI without
-            touching a spreadsheet or bespoke dashboard.
+          <p class="mx-auto max-w-2xl text-sm text-zinc-400 sm:mx-0 sm:text-base">
+            Retracify enumerates every package in your workspace, maps real import relationships,
+            and produces artefacts you can drop into RFCs, CI, or architecture reviews without
+            another dashboard.
           </p>
-          <div class="flex flex-wrap justify-center gap-3 sm:justify-start">
+          <div class="flex flex-wrap justify-center gap-2 sm:justify-start">
             <a
-              class="rounded-lg bg-sky-500/70 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300"
+              class="inline-flex items-center gap-2 rounded-full bg-zinc-50 px-5 py-2 text-sm font-medium text-zinc-900 transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-200"
               href="https://www.npmjs.com/package/retracify"
               target="_blank"
               rel="noopener"
-              >Install via npm</a
             >
+              Install via npm
+            </a>
             <a
-              class="rounded-lg border border-stone-700/70 px-6 py-3 text-sm font-semibold text-stone-100 transition hover:border-stone-500 hover:text-sky-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300"
+              class="inline-flex items-center gap-2 rounded-full border border-zinc-800 px-5 py-2 text-sm font-medium text-zinc-200 transition hover:border-zinc-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500"
               href="https://github.com/volnei/retracify"
               target="_blank"
               rel="noopener"
-              >View on GitHub</a
             >
+              View on GitHub
+            </a>
             <a
-              class="rounded-lg border border-sky-400/40 px-6 py-3 text-sm font-semibold text-sky-100 transition hover:border-sky-300 hover:text-sky-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-200"
+              class="inline-flex items-center gap-2 rounded-full border border-zinc-800 px-5 py-2 text-sm font-medium text-zinc-200 transition hover:border-zinc-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500"
               href="./sample-report.retracify.html"
               target="_blank"
               rel="noopener"
-              >Open sample report</a
             >
+              Open sample report
+            </a>
           </div>
-          <dl class="grid gap-3 text-sm text-stone-500 sm:grid-cols-3">
+          <dl class="grid gap-3 text-xs text-zinc-500 sm:grid-cols-3 sm:text-sm">
             <div>
-              <dt class="font-medium text-stone-300">Setup</dt>
+              <dt class="font-medium text-zinc-400">Setup</dt>
               <dd>Under five minutes locally</dd>
             </div>
             <div>
-              <dt class="font-medium text-stone-300">Monorepos</dt>
-              <dd>pnpm, npm, Yarn, aliases</dd>
+              <dt class="font-medium text-zinc-400">Monorepos</dt>
+              <dd>pnpm · npm · Yarn · aliases</dd>
             </div>
             <div>
-              <dt class="font-medium text-stone-300">License</dt>
+              <dt class="font-medium text-zinc-400">License</dt>
               <dd>MIT, open source</dd>
             </div>
           </dl>
         </div>
-        <div
-          class="rounded-xl border border-stone-800/80 bg-slate-950/80 p-5 shadow-[0_24px_36px_-28px_rgba(8,15,28,0.55)] sm:p-6"
-        >
-          <div class="flex items-center justify-between text-xs text-stone-500">
+        <div class="rounded-2xl border border-zinc-800 bg-[#0f0f13]/90 p-6 shadow-[0_25px_40px_-30px_rgba(8,8,10,0.65)]">
+          <div class="flex items-center justify-between text-xs text-zinc-500">
             <span class="inline-flex items-center gap-2 font-mono"
-              ><span class="h-2 w-2 rounded-full bg-sky-400"></span
-              >retracify report</span
+              ><span class="h-2 w-2 rounded-full bg-zinc-500"></span>retracify report</span
             >
             <span>workspace snapshot</span>
           </div>
-          <div class="mt-5 grid gap-5 text-sm">
+          <div class="mt-6 grid gap-5 text-sm">
             <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">
-                Workspace Health
-              </p>
-              <div class="mt-2 grid grid-cols-3 gap-3">
-                <div class="rounded-md border border-stone-800/60 bg-slate-950/70 p-3">
-                  <p class="text-2xl font-semibold text-stone-100">42</p>
-                  <p class="text-xs text-stone-500">packages analysed</p>
+              <div class="mt-2 grid grid-cols-3 gap-3 text-center">
+                <div class="rounded-xl border border-zinc-800 bg-[#111116] p-3">
+                  <p class="text-2xl font-semibold text-zinc-100">42</p>
+                  <p class="text-[11px] text-zinc-500">packages analysed</p>
                 </div>
-                <div class="rounded-md border border-stone-800/60 bg-slate-950/70 p-3">
-                  <p class="text-2xl font-semibold text-stone-100">0</p>
-                  <p class="text-xs text-stone-500">critical blockers</p>
+                <div class="rounded-xl border border-zinc-800 bg-[#111116] p-3">
+                  <p class="text-2xl font-semibold text-zinc-100">0</p>
+                  <p class="text-[11px] text-zinc-500">critical blockers</p>
                 </div>
-                <div class="rounded-md border border-stone-800/60 bg-slate-950/70 p-3">
-                  <p class="text-2xl font-semibold text-stone-100">132</p>
-                  <p class="text-xs text-stone-500">module edges mapped</p>
+                <div class="rounded-xl border border-zinc-800 bg-[#111116] p-3">
+                  <p class="text-2xl font-semibold text-zinc-100">132</p>
+                  <p class="text-[11px] text-zinc-500">module edges mapped</p>
                 </div>
               </div>
             </div>
-            <div class="rounded-md border border-stone-800/60 bg-slate-950/70 p-4">
-              <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">
+            <div class="rounded-xl border border-zinc-800 bg-[#111116] p-4">
+              <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 Key alerts
               </p>
-              <ul class="mt-2 space-y-1 font-mono text-xs text-rose-300/90">
+              <ul class="mt-2 space-y-1 font-mono text-xs text-zinc-400">
                 <li>@workspace/cart → @workspace/payments (cycle)</li>
                 <li>@workspace/ui · 3 undeclared dependants</li>
               </ul>
             </div>
             <pre
-              class="overflow-x-auto rounded-md border border-sky-400/30 bg-sky-500/10 p-3 text-xs text-sky-200 sm:p-4"
+              class="overflow-x-auto rounded-xl border border-zinc-800 bg-[#111116] p-3 text-xs text-zinc-300 sm:p-4"
             ><code>npx retracify .
 # generates retracify.html</code></pre>
           </div>
@@ -190,175 +184,109 @@
       </header>
 
       <section class="space-y-10">
-        <div class="space-y-4 text-center">
-          <h2 class="text-3xl font-semibold text-stone-100">
-            Evidence for engineering discussions, not marketing slides.
-          </h2>
-          <p class="mx-auto max-w-3xl text-base text-stone-400">
-            Retracify takes the graph your IDE hints at and turns it into precise,
-            queryable data. Swap hand-waving around “ownership” with concrete edges,
-            usage counts, and external surface area that any engineer can verify.
+        <div class="space-y-4 text-center sm:text-left">
+          <h2 class="text-3xl font-semibold text-zinc-100 font-['JetBrains_Mono','Geist_Mono','monospace']">Built for engineering conversations.</h2>
+          <p class="mx-auto max-w-3xl text-sm text-zinc-400 sm:text-base">
+            Retracify takes the graph your IDE hints at and turns it into precise, verifiable data.
+            Swap hand-waving around “ownership” with concrete edges, usage counts, and external exposure
+            that any engineer can follow.
           </p>
         </div>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <article
-            class="rounded-xl border border-stone-800/60 bg-slate-950/70 p-6 shadow-surface"
-          >
-            <h3 class="text-lg font-semibold text-stone-100">
-              Actionable graph insight
-            </h3>
-            <p class="mt-3 text-sm text-stone-400">
-              Consume the same edges the CLI analyses. No inferred heuristics—just
-              real import relationships with counts you can trace back to files.
+          <article class="rounded-2xl border border-zinc-800 bg-[#0f0f13] p-6">
+            <h3 class="text-lg font-semibold text-zinc-100">Actionable graph insight</h3>
+            <p class="mt-3 text-sm text-zinc-400">
+              Consume the same package edges the CLI analyses. No heuristics—just real imports you can trace back to files.
             </p>
           </article>
-          <article
-            class="rounded-xl border border-stone-800/60 bg-slate-950/70 p-6 shadow-surface"
-          >
-            <h3 class="text-lg font-semibold text-stone-100">
-              Cycle + drift detection
-            </h3>
-            <p class="mt-3 text-sm text-stone-400">
-              Highlight strongly connected components, undeclared dependants, and
-              dead installs before they surface as production fires.
+          <article class="rounded-2xl border border-zinc-800 bg-[#0f0f13] p-6">
+            <h3 class="text-lg font-semibold text-zinc-100">Cycle & drift detection</h3>
+            <p class="mt-3 text-sm text-zinc-400">
+              Highlight strongly connected components, undeclared dependants, and dead installs before they surface as incidents.
             </p>
           </article>
-          <article
-            class="rounded-xl border border-stone-800/60 bg-slate-950/70 p-6 shadow-surface"
-          >
-            <h3 class="text-lg font-semibold text-stone-100">
-              Workspace native
-            </h3>
-            <p class="mt-3 text-sm text-stone-400">
-              Understands pnpm/npm/Yarn layouts, honours `tsconfig` aliases, and
-              keeps nested workspaces isolated so parent modules stay clean.
+          <article class="rounded-2xl border border-zinc-800 bg-[#0f0f13] p-6">
+            <h3 class="text-lg font-semibold text-zinc-100">Workspace native</h3>
+            <p class="mt-3 text-sm text-zinc-400">
+              Understands pnpm/npm/Yarn layouts, honours tsconfig aliases, and keeps nested packages isolated without noise.
             </p>
           </article>
-          <article
-            class="rounded-xl border border-stone-800/60 bg-slate-950/70 p-6 shadow-surface"
-          >
-            <h3 class="text-lg font-semibold text-stone-100">
-              Automation ready
-            </h3>
-            <p class="mt-3 text-sm text-stone-400">
-              Emit JSON identical to the dashboard payload so your pipelines, bots,
-              or scorecards operate on the exact same facts as the UI.
+          <article class="rounded-2xl border border-zinc-800 bg-[#0f0f13] p-6">
+            <h3 class="text-lg font-semibold text-zinc-100">Automation ready</h3>
+            <p class="mt-3 text-sm text-zinc-400">
+              Export JSON that mirrors the HTML payload so bots, scorecards, and CI gates operate on the same facts engineers see.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="space-y-8">
+        <h2 class="text-3xl font-semibold text-zinc-100 font-['JetBrains_Mono','Geist_Mono','monospace']">How teams put Retracify to work</h2>
+        <div class="grid gap-6 md:grid-cols-3">
+          <article class="rounded-2xl border border-zinc-800 bg-[#0f0f13] p-6">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-500">01</p>
+            <h3 class="mt-4 text-xl font-semibold text-zinc-100">Scan any repository</h3>
+            <p class="mt-3 text-sm text-zinc-400">
+              Point Retracify at the repo root. It discovers every package, respects ignore patterns,
+              resolves aliases, and inspects actual import usage.
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-[#0f0f13] p-6">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-500">02</p>
+            <h3 class="mt-4 text-xl font-semibold text-zinc-100">Review actionable insight</h3>
+            <p class="mt-3 text-sm text-zinc-400">
+              Cycles, undeclared usage, tooling footprint, and reference counts surface with the evidence
+              required to justify refactors or guardrails.
+            </p>
+          </article>
+          <article class="rounded-2xl border border-zinc-800 bg-[#0f0f13] p-6">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-500">03</p>
+            <h3 class="mt-4 text-xl font-semibold text-zinc-100">Share or automate</h3>
+            <p class="mt-3 text-sm text-zinc-400">
+              Commit the HTML artefact alongside RFCs or wire the JSON into CI to flag cycles and undeclared dependants immediately.
             </p>
           </article>
         </div>
       </section>
 
       <section
-        class="rounded-2xl border border-stone-800/60 bg-stone-950/70 p-10 shadow-surface"
+        class="rounded-3xl border border-zinc-800 bg-[#0f0f13]/90 p-6 text-center shadow-[0_25px_40px_-30px_rgba(8,8,10,0.65)] sm:p-8 lg:p-10"
       >
-        <div class="space-y-4 text-center">
-          <h2 class="text-3xl font-semibold text-stone-100">
-            How engineering teams plug Retracify into their workflow
-          </h2>
-          <p class="mx-auto max-w-2xl text-base text-stone-400">
-            Platform engineers, tech leads, and ICs rely on Retracify for a shared
-            source of truth—without dragging crews into yet another dashboard tool.
-          </p>
-        </div>
-        <div class="mt-8 grid gap-6 md:grid-cols-3">
-          <div
-            class="rounded-xl border border-stone-800/60 bg-slate-950/65 p-6 text-left"
-          >
-            <span class="text-sm font-semibold uppercase tracking-[0.3em] text-sky-200"
-              >Step 01</span
-            >
-            <h3 class="mt-4 text-xl font-semibold text-stone-100">
-              Scan any repository
-            </h3>
-            <p class="mt-3 text-sm text-stone-400">
-              Point Retracify at the repo root. It enumerates every package,
-              respects ignore patterns, resolves aliases, and inspects actual import
-              usage.
-            </p>
-          </div>
-          <div
-            class="rounded-xl border border-stone-800/60 bg-slate-950/65 p-6 text-left"
-          >
-            <span class="text-sm font-semibold uppercase tracking-[0.3em] text-sky-200"
-              >Step 02</span
-            >
-            <h3 class="mt-4 text-xl font-semibold text-stone-100">
-              Review actionable insight
-            </h3>
-            <p class="mt-3 text-sm text-stone-400">
-              Cycles, undeclared usage, tooling footprint, and reference counts are
-              surfaced with the evidence required to justify refactors or guardrails.
-            </p>
-          </div>
-          <div
-            class="rounded-xl border border-stone-800/60 bg-slate-950/65 p-6 text-left"
-          >
-            <span class="text-sm font-semibold uppercase tracking-[0.3em] text-sky-200"
-              >Step 03</span
-            >
-            <h3 class="mt-4 text-xl font-semibold text-stone-100">
-              Share or automate
-            </h3>
-            <p class="mt-3 text-sm text-stone-400">
-              Commit the HTML artefact alongside RFCs or wire the JSON into CI to
-              fail builds when cycles or undeclared dependants reappear.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section
-        class="rounded-2xl border border-sky-400/30 bg-sky-500/10 p-6 text-center shadow-surface sm:p-8 lg:p-10"
-      >
-        <h2 class="text-3xl font-semibold text-sky-50">
+        <h2 class="text-3xl font-semibold text-zinc-100 font-['JetBrains_Mono','Geist_Mono','monospace']">
           Keep shipping fast without losing dependency discipline.
         </h2>
-        <p class="mt-4 max-w-2xl text-sm text-sky-100/80 md:mx-auto">
-          Retracify is open source, local-first, and tuned for engineers who want
-          hard data instead of guesswork. Run it whenever you touch a dependency
-          graph and keep the output close to the code.
+        <p class="mt-4 max-w-2xl text-sm text-zinc-400 md:mx-auto">
+          Retracify is open source, local-first, and tuned for engineers who want data they can trust.
+          Run it whenever your dependency graph changes and keep the output close to the code.
         </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <div class="mt-8 flex flex-wrap justify-center gap-2">
           <a
-            class="rounded-lg bg-sky-500/70 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-sky-400/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300"
+            class="inline-flex items-center gap-2 rounded-full bg-zinc-50 px-5 py-2 text-sm font-medium text-zinc-900 transition hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-200"
             href="https://github.com/volnei/retracify"
             target="_blank"
             rel="noopener"
-            >Start on GitHub</a
           >
+            Start on GitHub
+          </a>
           <a
-            class="rounded-lg border border-sky-400/40 px-6 py-3 text-sm font-semibold text-sky-100 transition hover:border-sky-300 hover:text-sky-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-200"
+            class="inline-flex items-center gap-2 rounded-full border border-zinc-800 px-5 py-2 text-sm font-medium text-zinc-200 transition hover:border-zinc-600 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500"
             href="https://www.npmjs.com/package/retracify"
             target="_blank"
             rel="noopener"
-            >Read the documentation</a
           >
+            Read the documentation
+          </a>
         </div>
       </section>
     </main>
 
-    <footer class="border-t border-stone-900/70 bg-slate-950/90 py-8">
-      <div class="mx-auto flex max-w-6xl flex-col items-center gap-2 px-6 text-center text-sm text-stone-500 sm:flex-row sm:justify-between sm:text-left">
-        <p>
-          © <span id="year"></span> Retracify. Built for engineering organisations
-          that pursue speed with control.
-        </p>
-        <p class="flex items-center gap-3 text-stone-400">
-          <a
-            class="transition hover:text-sky-200"
-            href="https://github.com/volnei/retracify"
-            target="_blank"
-            rel="noopener"
-            >GitHub</a
-          >
-          <span class="text-stone-700">•</span>
-          <a
-            class="transition hover:text-sky-200"
-            href="https://www.npmjs.com/package/retracify"
-            target="_blank"
-          rel="noopener"
-            >npm</a
-          >
+    <footer class="border-t border-zinc-900 bg-[#09090b] py-8">
+      <div class="mx-auto flex max-w-6xl flex-col items-center gap-2 px-6 text-center text-sm text-zinc-500 sm:flex-row sm:justify-between sm:text-left">
+        <p>© <span id="year"></span> Retracify. Built for engineering organisations that pursue speed with control.</p>
+        <p class="flex items-center gap-3 text-zinc-400">
+          <a class="transition hover:text-zinc-100" href="https://github.com/volnei/retracify" target="_blank" rel="noopener">GitHub</a>
+          <span class="text-zinc-700">•</span>
+          <a class="transition hover:text-zinc-100" href="https://www.npmjs.com/package/retracify" target="_blank" rel="noopener">npm</a>
         </p>
       </div>
     </footer>

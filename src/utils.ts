@@ -106,6 +106,12 @@ interface ConfigPatternDescriptor {
   dot?: boolean;
 }
 
+type DependencyDetail = {
+  name: string;
+  fileCount: number;
+  files: string[];
+};
+
 const CONFIG_DETECTIONS: ConfigPatternDescriptor[] = [
   {
     patterns: [
@@ -484,6 +490,7 @@ export async function renderHtmlReport(
       hasEslintConfig?: boolean;
       hasChildPackages?: boolean;
       toolingDeps?: string[];
+      dependencyDetails?: DependencyDetail[];
       externalDependencies: {
         name: string;
         isDeclared: boolean;
@@ -541,10 +548,78 @@ export async function renderHtmlReport(
     const typeExternal = pkg.externalDependencies.filter(
       (dep) => dep.isLikelyTypePackage,
     ).length;
+    const dependencyDrilldown = Array.isArray(pkg.dependencyDetails)
+      ? pkg.dependencyDetails
+          .map((detail: DependencyDetail) => ({
+            name: detail.name,
+            fileCount: detail.fileCount,
+            files: Array.isArray(detail.files) ? detail.files : [],
+          }))
+          .filter((detail: { fileCount: number }) => detail.fileCount > 0)
+      : [];
+    const undeclaredExternalDeps = pkg.undeclaredExternalDeps ?? [];
+    const unusedExternalDeps = pkg.unusedExternalDeps ?? [];
     const hasIssues =
       (pkg.undeclaredDeps?.length ?? 0) > 0 ||
-      (pkg.undeclaredExternalDeps?.length ?? 0) > 0 ||
-      (pkg.unusedExternalDeps?.length ?? 0) > 0;
+      undeclaredExternalDeps.length > 0 ||
+      unusedExternalDeps.length > 0;
+
+    const severitySignals: string[] = [];
+    let severityScore = 0;
+    if (pkg.cyclicDeps.length > 0) {
+      severitySignals.push(
+        `${pkg.cyclicDeps.length} cyclic ${
+          pkg.cyclicDeps.length === 1 ? "edge" : "edges"
+        }`,
+      );
+      severityScore += 3;
+    }
+    if (pkg.undeclaredDeps.length > 0) {
+      severitySignals.push(
+        `${pkg.undeclaredDeps.length} undeclared internal ${
+          pkg.undeclaredDeps.length === 1 ? "dependency" : "dependencies"
+        }`,
+      );
+      severityScore += Math.min(pkg.undeclaredDeps.length * 2, 4);
+    }
+    if (undeclaredExternalDeps.length > 0) {
+      severitySignals.push(
+        `${undeclaredExternalDeps.length} undeclared external ${
+          undeclaredExternalDeps.length === 1 ? "package" : "packages"
+        }`,
+      );
+      severityScore += Math.min(undeclaredExternalDeps.length * 2, 4);
+    }
+    if (unusedExternalDeps.length > 0) {
+      severitySignals.push(
+        `${unusedExternalDeps.length} unused external ${
+          unusedExternalDeps.length === 1 ? "package" : "packages"
+        }`,
+      );
+      severityScore += Math.min(unusedExternalDeps.length, 3);
+    }
+    if (runtimeExternal > 12) {
+      severitySignals.push("High runtime external usage");
+      severityScore += 1;
+    }
+    if (pkg.dependencies.length > 15) {
+      severitySignals.push("Large internal dependency surface");
+      severityScore += 1;
+    }
+    const severityLevel =
+      severityScore >= 5 ? "critical" : severityScore >= 2 ? "watch" : "stable";
+    const severityLabel =
+      severityLevel === "critical"
+        ? "High Risk"
+        : severityLevel === "watch"
+          ? "Needs Review"
+          : "Stable";
+    const severityToneClass =
+      severityLevel === "critical"
+        ? "border border-rose-400/60 bg-rose-500/10 text-rose-100"
+        : severityLevel === "watch"
+          ? "border border-blue-400/60 bg-blue-500/10 text-blue-100"
+          : "border border-zinc-700 bg-[#111116] text-zinc-300";
 
     summary.dependencyCount += pkg.dependencies.length;
     summary.cyclicDependencyCount += pkg.cyclicDeps.length;
@@ -565,6 +640,12 @@ export async function renderHtmlReport(
       typeExternalCount: typeExternal,
       toolingDepsList: toolingList,
       hasIssues,
+      severityLevel,
+      severityLabel,
+      severityToneClass,
+      severitySignals,
+      severityScore,
+      dependencyDrilldown,
       dependencyBadges: pkg.dependencies.map((dep) => ({
         name: dep,
         anchor: makeId(dep),

@@ -1,106 +1,3 @@
-<!DOCTYPE html>
-<html lang="en" class="dark-theme">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Dependency Report</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23facc15' stop-opacity='0.85'/%3E%3Cstop offset='100%25' stop-color='%231c1917'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='30' fill='%230f172a' stroke='%23facc15' stroke-width='3' opacity='0.95'/%3E%3Ccircle cx='18' cy='22' r='5' fill='%2338bdf8' opacity='0.85'/%3E%3Ccircle cx='46' cy='18' r='4' fill='%23f97316' opacity='0.75'/%3E%3Cpath d='M20 44 C 26 38 38 38 44 44' stroke='%2338bdf8' fill='none' stroke-width='3' stroke-linecap='round' opacity='0.8'/%3E%3Ctext x='15' y='38' font-family='JetBrains Mono,Menlo,monospace' font-size='18' font-weight='700' fill='%23facc15'%3ER%3C/text%3E%3Ctext x='35' y='38' font-family='JetBrains Mono,Menlo,monospace' font-size='18' font-weight='700' fill='%23facc15'%3ET%3C/text%3E%3C/svg%3E" />
-<link rel="preconnect" href="https://fonts.cdnfonts.com">
-<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/geist">
-<link rel="stylesheet" href="https://fonts.cdnfonts.com/css/geist-mono">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-<script>
-  window.tailwind = window.tailwind || {};
-  window.tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: {
-          sans: ["Geist", "Inter", "system-ui", "sans-serif"],
-          mono: ["Geist Mono", "JetBrains Mono", "Menlo", "monospace"],
-        },
-      },
-    },
-  };
-</script>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-  :root { color-scheme: dark; }
-  body { font-family: 'Geist', sans-serif; position: relative; background: radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 60%), #09090b; color: #f4f4f5; }
-  html { scroll-behavior: smooth; }
-  a.no-underline:hover { text-decoration: none !important; }
-  .github-corner svg { fill: #151513; color: #ffffff; }
-  .github-corner svg .octo-arm { transform-origin: 130px 106px; }
-  .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
-  .github-corner:focus-visible { outline: 2px solid rgba(244, 244, 245, 0.9); outline-offset: 4px; }
-  @keyframes octocat-wave {
-    0%, 100% { transform: rotate(0); }
-    20%, 60% { transform: rotate(-18deg); }
-    40%, 80% { transform: rotate(12deg); }
-  }
-</style>
-</head>
-<body class="min-h-screen antialiased text-zinc-100">
-  <a href="https://github.com/volnei/retracify" class="github-corner absolute right-0 top-0 z-40" aria-label="View source on GitHub" target="_blank" rel="noreferrer">
-    <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
-    <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#fff"/>
-    <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
-    <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
-    </svg>
-  </a>
-  <main class="relative mx-auto flex max-w-6xl flex-col gap-12 px-4 py-12 sm:gap-16 sm:px-6 sm:py-16">
-    <div class="rounded-3xl border border-zinc-800/70 bg-[rgba(15,15,18,0.9)] p-6 backdrop-blur-sm sm:p-10">
-      <div class="space-y-10">
-        <%- include('partials/banner') %>
-        <%- include('partials/legend') %>
-        <div id="app-root" class="space-y-8">
-          <div class="flex w-full justify-center py-16">
-            <div class="flex flex-col items-center gap-3 text-sm text-zinc-400">
-              <div class="h-10 w-10 animate-spin rounded-full border-2 border-zinc-700/70 border-t-transparent"></div>
-              <p>Loading interactive overview…</p>
-            </div>
-          </div>
-        </div>
-        <%- include('partials/footer') %>
-      </div>
-    </div>
-  </main>
-  <button id="scrollTop" type="button" aria-label="Scroll to top" class="fixed bottom-8 right-8 z-40 hidden h-12 w-12 items-center justify-center rounded-full border border-zinc-800 bg-[#0f0f13] text-lg text-zinc-300 shadow-[0_16px_32px_-20px_rgba(8,8,10,0.6)] transition hover:-translate-y-1 hover:bg-[#111116] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-500">
-    ⬆
-  </button>
-  <script>
-    const starsBadge = document.getElementById("githubStars");
-    if (starsBadge) {
-      fetch("https://api.github.com/repos/volnei/retracify", { headers: { "Accept": "application/vnd.github+json" } })
-        .then((response) => (response.ok ? response.json() : null))
-        .then((data) => {
-          if (!data || typeof data.stargazers_count !== "number") {
-            throw new Error("No star data");
-          }
-          const count = data.stargazers_count;
-          const formatted = count.toLocaleString();
-          starsBadge.innerHTML = '<span>★</span>' +
-            '<span>' + formatted + ' stars</span>';
-        })
-        .catch(() => {
-          starsBadge.innerHTML = '<span>★</span>' +
-            '<span>on github</span>';
-        });
-    }
-
-    const scrollTopBtn = document.getElementById("scrollTop");
-    if (scrollTopBtn) {
-      const toggleScrollTop = () => {
-        scrollTopBtn.classList.toggle("hidden", window.scrollY < 320);
-      };
-      toggleScrollTop();
-      window.addEventListener("scroll", toggleScrollTop, { passive: true });
-      scrollTopBtn.addEventListener("click", () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    }
-  </script>
-  <script id="reportData" type="application/json"><%- clientPayload %></script>
-  <script type="module">
     import { h, render } from "https://esm.sh/preact@10.19.3";
     import { html } from "https://esm.sh/htm@3.1.1/preact";
     import { useMemo, useRef, useState } from "https://esm.sh/preact@10.19.3/hooks";
@@ -145,7 +42,7 @@
       meta: { ...fallbackPayload.meta, ...(parsedPayload.meta || {}) },
     };
 
-    const buttonBase = "flex w-full items-center justify-center rounded-full border px-4 py-2.5 text-sm font-medium transition-colors sm:w-auto sm:px-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-400/60";
+    const buttonBase = "flex w-full items-center justify-center rounded-full border px-4 py-2.5 text-sm font-medium transition-colors sm:w-auto sm:px-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-500/60";
 
     const SummaryCards = ({ summary, meta }) => html`
       <section class="space-y-5">
@@ -197,23 +94,13 @@
       <div class="flex flex-col items-stretch gap-2 rounded-xl border border-zinc-800/70 bg-[#111116] p-2 sm:inline-flex sm:flex-row sm:items-center sm:gap-3">
         <button
           type="button"
-          class=${cx(
-            buttonBase,
-            view === "list"
-              ? "border-zinc-200/60 bg-[#1c1c24] text-zinc-50 shadow-[0_12px_32px_-24px_rgba(0,0,0,0.85)]"
-              : "border-zinc-800/80 bg-[#12121a] text-zinc-300 hover:border-zinc-600 hover:text-zinc-100"
-          )}
+          class=${cx(buttonBase, view === "list" ? "border-zinc-50 bg-zinc-50 text-zinc-900" : "border-zinc-800 bg-[#111116] text-zinc-300 hover:border-zinc-700 hover:text-zinc-100")}
           aria-pressed=${view === "list"}
           onClick=${() => onChange("list")}
         >List View</button>
         <button
           type="button"
-          class=${cx(
-            buttonBase,
-            view === "blocks"
-              ? "border-zinc-200/60 bg-[#1c1c24] text-zinc-50 shadow-[0_12px_32px_-24px_rgba(0,0,0,0.85)]"
-              : "border-zinc-800/80 bg-[#12121a] text-zinc-300 hover:border-zinc-600 hover:text-zinc-100"
-          )}
+          class=${cx(buttonBase, view === "blocks" ? "border-zinc-50 bg-zinc-50 text-zinc-900" : "border-zinc-800 bg-[#111116] text-zinc-300 hover:border-zinc-700 hover:text-zinc-100")}
           aria-pressed=${view === "blocks"}
           onClick=${() => onChange("blocks")}
         >Blocks View</button>
@@ -221,46 +108,31 @@
     `;
 
     const filterOptions = [
-      {
-        id: "all",
-        label: "All packages",
-        accent: "bg-zinc-800/80 text-zinc-200",
-        accentActive: "bg-zinc-200/15 text-zinc-100",
-      },
-      {
-        id: "issues",
-        label: "Needs attention",
-        accent: "bg-rose-500/15 text-rose-200",
-        accentActive: "bg-rose-500/25 text-rose-100",
-      },
-      {
-        id: "tooling",
-        label: "Has tooling",
-        accent: "bg-sky-500/15 text-sky-200",
-        accentActive: "bg-sky-500/25 text-sky-100",
-      },
+      { id: "all", label: "All packages", accent: "bg-[#121217] text-zinc-400" },
+      { id: "issues", label: "Needs attention", accent: "bg-[#1e1116] text-rose-200" },
+      { id: "tooling", label: "Has tooling", accent: "bg-[#111b26] text-sky-200" },
     ];
 
     const FilterBar = ({ filter, setFilter, search, setSearch, counts }) => html`
       <div class="flex flex-col gap-4 rounded-xl border border-zinc-800/70 bg-[#0f0f13]/90 p-3 sm:p-4">
         <div class="grid gap-3 sm:grid-cols-3">
-          ${filterOptions.map(({ id, label, accent, accentActive }) => {
+          ${filterOptions.map(({ id, label, accent }) => {
             const isActive = filter === id;
             return html`
               <button
                 key=${id}
                 type="button"
                 class=${cx(
-                  "flex w-full flex-col items-start gap-1 rounded-2xl border px-4 py-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-400/60",
+                  "flex w-full flex-col items-start gap-1 rounded-2xl border px-4 py-3 text-left transition",
                   isActive
-                    ? "border-zinc-200/60 bg-gradient-to-br from-[#1c1c24] via-[#181821] to-[#1f1f2a] text-zinc-50 shadow-[0_16px_32px_-24px_rgba(0,0,0,0.85)]"
-                    : "border-zinc-800/80 bg-[#14141c] text-zinc-300 hover:border-zinc-600 hover:bg-[#1b1b24] hover:text-zinc-100"
+                    ? "border-zinc-50 bg-zinc-50 text-zinc-900"
+                    : "border-zinc-800 bg-[#111116] text-zinc-300 hover:border-zinc-600 hover:text-zinc-100"
                 )}
                 onClick=${() => setFilter(id)}
               >
                 <span class=${cx(
-                  "inline-flex items-center gap-2 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide leading-tight",
-                  isActive ? accentActive : accent
+                  "inline-flex items-center gap-2 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+                  isActive ? "bg-zinc-900/80 text-zinc-200" : accent
                 )}>${label}</span>
                 <span class="text-lg font-semibold text-zinc-100">${counts[id] ?? 0}</span>
                 <span class="text-xs text-zinc-500">${id === "all" ? "Total packages" : id === "issues" ? "Missing deps or unused externals" : "Configs or scripts detected"}</span>
@@ -293,33 +165,6 @@
       const copyTimerRef = useRef(null);
 
       if (!items || items.length === 0) return null;
-
-      const resolveEditorLinks = (filePath) => {
-        if (typeof filePath !== "string" || filePath.length === 0) {
-          return null;
-        }
-        const rootDir =
-          typeof payload.meta?.rootDir === "string" ? payload.meta.rootDir : "";
-        const normalize = (value) => value.replace(/\\/g, "/");
-        const normalizedRoot = rootDir ? normalize(rootDir) : "";
-        const normalizedFile = normalize(filePath);
-        const hasDrive = /^[A-Za-z]:/i.test(normalizedFile);
-        const isAbsolute =
-          normalizedFile.startsWith("/") || hasDrive;
-        if (!isAbsolute && !normalizedRoot) {
-          return null;
-        }
-        const basePath = isAbsolute
-          ? normalizedFile
-          : normalizedRoot
-            ? `${normalizedRoot.replace(/\/$/, "")}/${normalizedFile.replace(/^\.?\//, "")}`
-            : normalizedFile;
-        const encodedPath = encodeURIComponent(basePath);
-        return {
-          vscode: `vscode://file/${encodedPath}`,
-          zed: `zed://open?path=${encodedPath}`,
-        };
-      };
 
       const handleCopy = async (filePath) => {
         try {
@@ -361,39 +206,15 @@
                   <div class="space-y-1.5">
                     ${item.files.map(
                       (file) => html`
-                        <div key=${file} class="flex flex-wrap items-center gap-2 rounded-sm bg-[#0f0f13] px-2 py-1">
+                        <div key=${file} class="flex items-center gap-2 rounded-sm bg-[#0f0f13] px-2 py-1">
                           <code class="flex-1 truncate font-mono text-[11px] text-zinc-300" title=${file}>${file}</code>
-                          <div class="flex items-center gap-1.5">
-                            ${(() => {
-                              const links = resolveEditorLinks(file);
-                              if (!links) return null;
-                              return html`
-                                <a
-                                  class="inline-flex items-center gap-1 rounded border border-zinc-700/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-300 transition hover:border-zinc-500 hover:text-zinc-100"
-                                  href=${links.vscode}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  VS Code
-                                </a>
-                                <a
-                                  class="inline-flex items-center gap-1 rounded border border-zinc-700/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-300 transition hover:border-zinc-500 hover:text-zinc-100"
-                                  href=${links.zed}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  Zed
-                                </a>
-                              `;
-                            })()}
-                            <button
-                              type="button"
-                              class="shrink-0 rounded border border-zinc-700/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-400 transition hover:border-zinc-500 hover:text-zinc-100"
-                              onClick=${() => handleCopy(file)}
-                            >
-                              ${copiedPath === file ? "Copied" : "Copy"}
-                            </button>
-                          </div>
+                          <button
+                            type="button"
+                            class="shrink-0 rounded border border-zinc-700/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-400 transition hover:border-zinc-500 hover:text-zinc-100"
+                            onClick=${() => handleCopy(file)}
+                          >
+                            ${copiedPath === file ? "Copied" : "Copy"}
+                          </button>
                         </div>
                       `,
                     )}
@@ -467,9 +288,9 @@
                 ? html`<span class="rounded-sm bg-[#111116] px-3 py-0.5 text-xs font-medium text-zinc-300">v${pkg.version}</span>`
                 : null}
             </h3>
-            ${pkg.description?.trim()
+            ${pkg.description
               ? html`<p class="max-w-[32ch] text-[11px] text-zinc-400/90 line-clamp-2">${pkg.description}</p>`
-              : html`<p class="max-w-[32ch] text-[11px] italic text-zinc-500/70">No description provided in package.json</p>`}
+              : null}
             ${pkg.relativeDir
               ? html`<p class="font-mono text-xs text-zinc-500">${pkg.relativeDir}</p>`
               : null}
@@ -488,10 +309,7 @@
           </div>
           <div class="flex flex-wrap items-start justify-end gap-2">
             <span
-              class=${cx(
-                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase leading-tight tracking-wide shadow-[0_1px_2px_rgba(0,0,0,0.45)]",
-                pkg.severityToneClass,
-              )}
+              class=${`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${pkg.severityToneClass}`}
             >
               <span class=${`h-2 w-2 rounded-full ${severityDotByLevel[pkg.severityLevel] ?? "bg-zinc-500"}`}></span>
               ${pkg.severityLabel}
@@ -620,10 +438,7 @@
                       : null}
                   </div>
                   <div class="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
-                    <span class=${cx(
-                      "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase leading-tight tracking-wide shadow-[0_1px_2px_rgba(0,0,0,0.45)]",
-                      pkg.severityToneClass,
-                    )}>
+                    <span class=${`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${pkg.severityToneClass}`}>
                       <span class=${`h-2 w-2 rounded-full ${severityDot}`}></span>
                       ${pkg.severityLabel}
                     </span>
@@ -791,6 +606,4 @@
       root.innerHTML = "";
       render(html`<${App} data=${payload} />`, root);
     }
-  </script>
-</body>
-</html>
+  

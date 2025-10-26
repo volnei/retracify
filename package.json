@@ -25,6 +25,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "prepublishOnly": "pnpm run test && pnpm run build",
+    "update:sample-report": "node --import tsx scripts/update-sample-report.ts",
     "release:patch": "pnpm version patch && pnpm publish --access public",
     "release:minor": "pnpm version minor && pnpm publish --access public",
     "release:major": "pnpm version major && pnpm publish --access public"
@@ -42,11 +43,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
+    "@testing-library/preact": "^3.2.4",
+    "@testing-library/user-event": "^14.6.1",
     "@types/ejs": "^3.1.5",
     "@types/node": "^24.9.1",
     "@vitest/coverage-v8": "^4.0.3",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.8",
+    "jsdom": "^27.0.1",
+    "preact": "^10.27.2",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
