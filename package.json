@@ -1,6 +1,6 @@
 {
   "name": "retracify",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Generate interactive dependency reports for workspaces and standalone projects.",
   "keywords": [
     "dependencies",
