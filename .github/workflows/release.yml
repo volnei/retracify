@@ -47,8 +47,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           pnpm run release:${{ github.event.inputs.version }}
+          node -e "console.log('RELEASE_VERSION=' + require('./package.json').version)" >> "$GITHUB_ENV"
           pnpm run publish:package
-          echo "RELEASE_VERSION=$(node -p \"require('./package.json').version\")" >> "$GITHUB_ENV"
 
       - name: Push changes
         env:
