@@ -436,9 +436,19 @@
             ? "bg-purple-500/15 text-purple-100 hover:bg-purple-500/25"
             : "bg-[#111116] text-zinc-300 hover:bg-[#15151a]";
       return html`
-        <span class=${`inline-flex items-center gap-2 rounded-sm px-3 py-1 text-xs font-medium transition-colors ${tone}`}>
+        <span class=${`inline-flex flex-wrap items-center gap-2 rounded-sm px-3 py-1 text-xs font-medium transition-colors ${tone}`}>
           <span class="font-mono text-[11px]">${dep.name}</span>
           <span class="rounded-sm bg-[#0c0c10] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-200/90">${dep.statusLabel}</span>
+          ${dep.scopeLabel
+            ? html`<span
+                class=${cx(
+                  "rounded-sm px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+                  dep.scopeToneClass || "bg-zinc-700/60 text-zinc-100",
+                )}
+              >
+                ${dep.scopeLabel}
+              </span>`
+            : null}
           ${dep.isTypeOnly
             ? html`<span class="rounded-sm bg-purple-500/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-purple-50">Type</span>`
             : null}
