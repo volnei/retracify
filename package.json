@@ -26,9 +26,10 @@
     "test:coverage": "vitest run --coverage",
     "prepublishOnly": "pnpm run test && pnpm run build",
     "update:sample-report": "node --import tsx scripts/update-sample-report.ts",
-    "release:patch": "pnpm version patch && pnpm publish --access public",
-    "release:minor": "pnpm version minor && pnpm publish --access public",
-    "release:major": "pnpm version major && pnpm publish --access public"
+    "release:patch": "pnpm version patch",
+    "release:minor": "pnpm version minor",
+    "release:major": "pnpm version major",
+    "publish:package": "pnpm publish --access public"
   },
   "files": [
     "dist",

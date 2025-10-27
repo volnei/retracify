@@ -26,14 +26,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
-          run_install: false
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9.12.0 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -51,6 +47,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           pnpm run release:${{ github.event.inputs.version }}
+          pnpm run publish:package
           echo "RELEASE_VERSION=$(node -p \"require('./package.json').version\")" >> "$GITHUB_ENV"
 
       - name: Push changes
