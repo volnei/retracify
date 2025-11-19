@@ -1,36 +1,87 @@
-  <section class="relative overflow-hidden rounded-md border border-stone-800/70 bg-gradient-to-br from-stone-950 via-stone-900 to-stone-950 px-8 py-9 text-stone-200 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.8)]">
-    <div class="pointer-events-none absolute inset-0 opacity-40 mix-blend-color-dodge">
-      <div class="absolute inset-0 bg-[repeating-linear-gradient(0deg,rgba(255,255,255,0.1)_0,rgba(255,255,255,0.1)_1px,transparent_1px,transparent_3px)]"></div>
-    </div>
-    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-amber-400 via-pink-400 via-sky-400 to-lime-400 opacity-70"></div>
-    <div class="relative flex flex-col gap-6">
-      <div class="flex flex-col gap-2 text-xs uppercase tracking-[0.3em] text-stone-400 sm:flex-row sm:items-center sm:justify-between">
-        <div class="flex items-center gap-2 text-stone-300">
-          <span class="rounded-full border border-amber-400/50 bg-stone-950/80 px-3 py-1 font-mono text-[11px] tracking-[0.2em]">volnei/retracify</span>
-          <a href="https://github.com/volnei/retracify" class="inline-flex items-center gap-1 rounded-full border border-stone-800/60 bg-transparent px-3 py-1 text-[11px] font-mono tracking-[0.2em] text-stone-400 transition hover:border-amber-300/40 hover:text-amber-200" target="_blank" rel="noreferrer">
-            view repo
-            <span aria-hidden="true">↗</span>
+  <section class="relative overflow-hidden rounded-2xl border border-stone-900/70 bg-stone-950 px-8 py-12 shadow-[0_32px_80px_-48px_rgba(0,0,0,0.85)]">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(253,186,116,0.08),transparent_55%)]"></div>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(99,102,241,0.12),transparent_55%)]"></div>
+    <div class="relative grid gap-10 lg:grid-cols-[1.1fr,0.9fr]">
+      <div class="space-y-6">
+        <span class="inline-flex items-center gap-2 rounded-full border border-stone-800/80 bg-stone-900/70 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-stone-400">
+          <span class="shrink-0 text-stone-300" data-icon="dependency" data-icon-class="h-3.5 w-3.5"></span>
+          Retracify atlas report
+        </span>
+        <h1 class="text-3xl font-semibold leading-tight text-stone-50 sm:text-[2.5rem]">
+          Dependency clarity without another dashboard.
+        </h1>
+        <p class="max-w-2xl text-sm leading-relaxed text-stone-300">
+          Retracify turns AST analysis into a shareable atlas so you can triage risk, defend architecture proposals, and unblock reviews fast.
+        </p>
+        <ul class="grid gap-2 text-xs text-stone-400 sm:grid-cols-2">
+          <li class="inline-flex items-center gap-2 rounded-lg border border-stone-900/70 bg-stone-950/70 px-3 py-1">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+            Cycle and undeclared import alerts with file evidence.
+          </li>
+          <li class="inline-flex items-center gap-2 rounded-lg border border-stone-900/70 bg-stone-950/70 px-3 py-1">
+            <span class="h-1.5 w-1.5 rounded-full bg-sky-400"></span>
+            Performance heuristics that highlight heavy fan-out modules.
+          </li>
+        </ul>
+        <div class="flex flex-wrap items-center gap-4">
+          <a
+            href="https://github.com/volnei/retracify"
+            class="inline-flex items-center gap-2 rounded-full border border-emerald-400/50 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-200 transition hover:border-emerald-300/60 hover:text-emerald-100"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span data-icon="external" data-icon-class="h-4 w-4"></span>
+            View repository
           </a>
+          <button
+            type="button"
+            class="inline-flex items-center gap-2 rounded-full border border-stone-800/70 bg-stone-900/70 px-4 py-2 text-sm font-semibold text-stone-200 transition hover:border-stone-600 hover:text-stone-100"
+            data-action="export-json"
+          >
+            <span data-icon="file" data-icon-class="h-4 w-4"></span>
+            Export JSON snapshot
+          </button>
+          <button
+            type="button"
+            class="text-xs font-semibold uppercase tracking-[0.18em] text-stone-400 transition hover:text-stone-100"
+            data-scroll-to="#performance"
+          >
+            Jump to performance →
+          </button>
         </div>
-        <div class="flex items-center gap-2">
-          <div id="githubStars" class="inline-flex items-center gap-2 rounded-full border border-stone-800/60 bg-stone-950/70 px-3 py-1 text-[11px] font-mono tracking-[0.2em] text-amber-200 shadow-[0_10px_25px_-20px_rgba(0,0,0,0.9)]">
-            <span class="text-amber-300">★</span>
-            <span class="uppercase">fetching…</span>
+      </div>
+      <aside class="space-y-6 rounded-2xl border border-stone-900/80 bg-stone-950/80 p-6">
+        <header class="flex items-center justify-between text-xs uppercase tracking-[0.22em] text-stone-500">
+          <span>Atlas metrics</span>
+          <div id="githubStars" class="inline-flex items-center gap-2 rounded-full border border-stone-800/70 bg-stone-900/70 px-3 py-1 font-mono text-[11px] text-stone-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3 2.31 4.68L19.5 8.4l-3.66 3.57.86 5.03L12 14.77 7.3 17l.86-5.03L4.5 8.4l5.19-.72L12 3z"></path>
+            </svg>
+            <span class="uppercase text-stone-400">Loading...</span>
           </div>
-        </div>
-      </div>
-      <div class="flex items-center gap-5">
-        <div class="flex h-16 w-16 items-center justify-center rounded border border-amber-400/60 bg-stone-950 text-amber-300 shadow-[0_0_20px_rgba(255,214,165,0.3)]">
-          <span class="text-lg font-normal tracking-wide" style="font-family: 'Press Start 2P', cursive;">RT</span>
-        </div>
-        <div class="space-y-1">
-          <h1 class="text-3xl font-semibold tracking-tight text-stone-100 sm:text-[2.35rem]" style="font-family: 'Press Start 2P', cursive;">
-            RETRACIFY
-          </h1>
-          <p class="font-mono text-xs uppercase tracking-[0.35em] text-stone-400">
-            dependency atlas for codebases
-          </p>
-        </div>
-      </div>
+        </header>
+        <ul class="grid gap-4 text-sm text-stone-300">
+          <li class="rounded-xl border border-stone-900/70 bg-stone-950/60 p-4">
+            <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Packages tracked</p>
+            <p class="mt-2 text-2xl font-semibold text-stone-50" data-hero-metric="packages">—</p>
+            <p class="mt-1 text-xs text-stone-500">Active nodes across the workspace atlas.</p>
+          </li>
+          <li class="rounded-xl border border-stone-900/70 bg-stone-950/60 p-4">
+            <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Graph edges</p>
+            <p class="mt-2 text-2xl font-semibold text-stone-50" data-hero-metric="edges">—</p>
+            <p class="mt-1 text-xs text-stone-500">Internal links resolved from import analysis.</p>
+          </li>
+          <li class="rounded-xl border border-stone-900/70 bg-stone-950/60 p-4">
+            <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Runtime externals</p>
+            <p class="mt-2 text-2xl font-semibold text-stone-50" data-hero-metric="externals">—</p>
+            <p class="mt-1 text-xs text-stone-500">Third-party dependencies referenced at runtime.</p>
+          </li>
+          <li class="rounded-xl border border-stone-900/70 bg-stone-950/60 p-4">
+            <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Generated</p>
+            <p class="mt-2 text-2xl font-semibold text-stone-50" data-hero-metric="generatedAt">—</p>
+            <p class="mt-1 text-xs text-stone-500">Using Node <span data-hero-metric="nodeVersion">—</span></p>
+          </li>
+        </ul>
+      </aside>
     </div>
   </section>

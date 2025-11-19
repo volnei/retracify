@@ -1,15 +1,12 @@
-import { describe, test, expect, beforeAll, afterAll, vi } from "vitest";
+import { describe, test, expect, beforeAll, afterAll } from "bun:test";
+import path from "path";
+import { readFile, writeFile } from "fs/promises";
 import { createWorkspaceFixture } from "./fixtures/workspace-project";
 import { createSimpleProjectFixture } from "./fixtures/simple-project";
 import type { ProjectFixture } from "./fixtures/shared";
+import { IncrementalDependencyReportBuilder } from "../src/graph?actual";
 
 describe("generateDependencyReport integration", () => {
-  beforeAll(() => {
-    vi.doUnmock("ts-morph");
-    vi.doUnmock("../src/utils");
-    vi.doUnmock("../src/graph");
-  });
-
   describe("workspace project", () => {
     let fixture: ProjectFixture;
 
@@ -22,8 +19,7 @@ describe("generateDependencyReport integration", () => {
     });
 
     async function loadReport() {
-      vi.resetModules();
-      const { generateDependencyReport } = await import("../src/graph");
+      const { generateDependencyReport } = await import("../src/graph?actual");
       return generateDependencyReport({ rootDir: fixture.rootDir });
     }
 
@@ -41,10 +37,18 @@ describe("generateDependencyReport integration", () => {
 
       const appOne = pickPackage(report, "@workspace/app-one");
       expect(appOne.dependencies.sort()).toEqual(
-        ["@workspace/platform-core", "@workspace/ui", "@workspace/utils"].sort(),
+        [
+          "@workspace/platform-core",
+          "@workspace/ui",
+          "@workspace/utils",
+        ].sort(),
       );
       expect(appOne.declaredDeps.sort()).toEqual(
-        ["@workspace/platform-core", "@workspace/ui", "@workspace/utils"].sort(),
+        [
+          "@workspace/platform-core",
+          "@workspace/ui",
+          "@workspace/utils",
+        ].sort(),
       );
       expect(appOne.undeclaredDeps).toEqual([]);
       expect(
@@ -175,8 +179,12 @@ describe("generateDependencyReport integration", () => {
       ]);
       expect(appOne.unusedExternalDeps).toEqual(["lodash"]);
       expect(appOne.unusedExternalDeps).not.toContain("@types/react");
-      expect(appOne.unusedExternalDeps).not.toContain("@typescript-eslint/eslint-plugin");
-      expect(appOne.unusedExternalDeps).not.toContain("@typescript-eslint/parser");
+      expect(appOne.unusedExternalDeps).not.toContain(
+        "@typescript-eslint/eslint-plugin",
+      );
+      expect(appOne.unusedExternalDeps).not.toContain(
+        "@typescript-eslint/parser",
+      );
       expect(appOne.unusedExternalDeps).not.toContain("autoprefixer");
       expect(appOne.unusedExternalDeps).not.toContain("vite");
       expect(appOne.unusedExternalDeps).not.toContain("vitest");
@@ -239,10 +247,17 @@ describe("generateDependencyReport integration", () => {
       const report = await loadReport();
 
       const platformCore = pickPackage(report, "@workspace/platform-core");
-      const platformGateway = pickPackage(report, "@workspace/platform-gateway");
+      const platformGateway = pickPackage(
+        report,
+        "@workspace/platform-gateway",
+      );
 
-      expect(platformCore.dependencies).toContain("@workspace/platform-gateway");
-      expect(platformGateway.dependencies).toContain("@workspace/platform-core");
+      expect(platformCore.dependencies).toContain(
+        "@workspace/platform-gateway",
+      );
+      expect(platformGateway.dependencies).toContain(
+        "@workspace/platform-core",
+      );
       expect(platformCore.cyclicDeps).toContain("@workspace/platform-gateway");
       expect(platformGateway.cyclicDeps).toContain("@workspace/platform-core");
     });
@@ -260,8 +275,7 @@ describe("generateDependencyReport integration", () => {
     });
 
     async function loadReport() {
-      vi.resetModules();
-      const { generateDependencyReport } = await import("../src/graph");
+      const { generateDependencyReport } = await import("../src/graph?actual");
       return generateDependencyReport({ rootDir: fixture.rootDir });
     }
 
@@ -299,5 +313,58 @@ describe("generateDependencyReport integration", () => {
       expect(pkg.undeclaredExternalDeps).toContain("axios");
       expect(pkg.unusedExternalDeps).not.toContain("lodash");
     });
+  });
+});
+
+describe("IncrementalDependencyReportBuilder", () => {
+  let fixture: ProjectFixture;
+
+  beforeAll(async () => {
+    fixture = await createWorkspaceFixture();
+  });
+
+  afterAll(async () => {
+    await fixture.cleanup();
+  });
+
+  test("updates dependency graph when a single file changes", async () => {
+    const builder = new IncrementalDependencyReportBuilder({
+      rootDir: fixture.rootDir,
+    });
+
+    const initialReport = await builder.buildReport();
+    const pickPackage = (name: string) =>
+      initialReport.packages.find((pkg) => pkg.name === name) ?? null;
+    const appOneBefore = pickPackage("@workspace/app-one");
+    expect(appOneBefore).not.toBeNull();
+    expect(appOneBefore?.dependencies).not.toContain(
+      "@workspace/platform-gateway",
+    );
+
+    const targetFile = path.join(
+      fixture.rootDir,
+      "apps/app-one/src/index.ts",
+    );
+    const originalContent = await readFile(targetFile, "utf8");
+    await writeFile(
+      targetFile,
+      `${originalContent}\nimport "@workspace/platform-gateway";\n`,
+      "utf8",
+    );
+
+    try {
+      const updatedReport = await builder.buildReport({
+        changedFiles: [targetFile],
+      });
+      const updatedAppOne =
+        updatedReport.packages.find((pkg) => pkg.name === "@workspace/app-one") ??
+        null;
+      expect(updatedAppOne).not.toBeNull();
+      expect(updatedAppOne?.dependencies).toContain(
+        "@workspace/platform-gateway",
+      );
+    } finally {
+      await writeFile(targetFile, originalContent, "utf8");
+    }
   });
 });

@@ -1,4 +1,4 @@
-import fs from "fs/promises";
+import { mkdir, mkdtemp, rm, writeFile as writeFileAsync } from "fs/promises";
 import path from "path";
 import os from "os";
 
@@ -14,20 +14,20 @@ interface FixtureContext extends ProjectFixture {
 export async function createFixtureContext(
   prefix = "retracify-fixture",
 ): Promise<FixtureContext> {
-  const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), `${prefix}-`));
+  const rootDir = await mkdtemp(path.join(os.tmpdir(), `${prefix}-`));
 
   const writeFile = async (relativePath: string, contents: unknown) => {
     const fullPath = path.join(rootDir, relativePath);
-    await fs.mkdir(path.dirname(fullPath), { recursive: true });
+    await mkdir(path.dirname(fullPath), { recursive: true });
     if (typeof contents === "string") {
-      await fs.writeFile(fullPath, contents, "utf8");
+      await writeFileAsync(fullPath, contents, "utf8");
     } else {
-      await fs.writeFile(fullPath, JSON.stringify(contents, null, 2), "utf8");
+      await writeFileAsync(fullPath, JSON.stringify(contents, null, 2), "utf8");
     }
   };
 
   const cleanup = async () => {
-    await fs.rm(rootDir, { recursive: true, force: true });
+    await rm(rootDir, { recursive: true, force: true });
   };
 
   return { rootDir, writeFile, cleanup };

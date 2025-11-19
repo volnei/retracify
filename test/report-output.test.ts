@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeAll, afterAll, vi } from "vitest";
+import { describe, expect, test, beforeAll, afterAll } from "bun:test";
 import type { ProjectFixture } from "./fixtures/shared";
 import { createSimpleProjectFixture } from "./fixtures/simple-project";
 
@@ -15,9 +15,6 @@ describe("rendered report HTML", () => {
   let fixture: ProjectFixture;
 
   beforeAll(async () => {
-    vi.doUnmock("ts-morph");
-    vi.doUnmock("../src/utils");
-    vi.doUnmock("../src/graph");
     fixture = await createSimpleProjectFixture();
   });
 
@@ -26,8 +23,7 @@ describe("rendered report HTML", () => {
   });
 
   test("does not contain TypeScript-only syntax", async () => {
-    vi.resetModules();
-    const { generateDependencyReport } = await import("../src/graph");
+    const { generateDependencyReport } = await import("../src/graph?actual");
     const { renderHtmlReport } = await import("../src/utils");
 
     const report = await generateDependencyReport({ rootDir: fixture.rootDir });

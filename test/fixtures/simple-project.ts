@@ -1,4 +1,4 @@
-import { createFixtureContext, type ProjectFixture } from "./shared";
+import { createFixtureContext, type ProjectFixture } from "./shared.js";
 
 export async function createSimpleProjectFixture(): Promise<ProjectFixture> {
   const { rootDir, writeFile, cleanup } = await createFixtureContext(

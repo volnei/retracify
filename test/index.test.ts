@@ -1,214 +1,120 @@
-import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
-import type { GenerateReportOptions } from "../src/types";
+import { describe, test, expect, mock, beforeEach, afterEach, spyOn } from "bun:test";
+import type { ChalkInstance } from "chalk";
 
-type MockPackage = {
-  name: string;
-  version?: string;
-  description?: string;
-  relativeDir?: string;
-  dependencies: string[];
-  declaredDeps: string[];
-  undeclaredDeps: string[];
-  references: number;
-  cyclicDeps: string[];
-  fileCount?: number;
-  isRoot?: boolean;
-  hasTsconfig?: boolean;
-  hasTailwindConfig?: boolean;
-  hasAutoprefixer?: boolean;
-  hasEslintConfig?: boolean;
-  hasChildPackages?: boolean;
-  toolingDeps?: string[];
-  externalDependencies: {
-    name: string;
-    isDeclared: boolean;
-    isUsed: boolean;
-    usageCount: number;
-    declaredInDependencies: boolean;
-    declaredInDevDependencies: boolean;
-    isLikelyTypePackage: boolean;
-    isToolingOnly: boolean;
-  }[];
-  undeclaredExternalDeps: string[];
-  unusedExternalDeps: string[];
-};
+const startLiveUiServer = mock<(
+  options: {
+    rootDir: string;
+    port: number;
+    host: string;
+    generateReport: unknown;
+    ora: unknown;
+    chalk: ChalkInstance;
+    autoOpen: boolean;
+  },
+) => Promise<void>>();
 
-type MockReport = {
-  rootDir: string;
-  packages: MockPackage[];
-};
+const spinnerCalls: Array<{ text: string }> = [];
 
-const mocks = vi.hoisted(() => {
-  const writeFile = vi.fn();
-  const generateDependencyReport = vi.fn<
-    (
-      options: GenerateReportOptions & {
-        onProgress?: (msg: string, progress?: number) => void;
-      },
-    ) => Promise<MockReport>
-  >();
-  const renderHtmlReport = vi.fn(async () => "<html>report</html>");
-  const serializeReportToJson = vi.fn(() => '{"ok":true}');
-  const spinnerCalls: Array<{
-    text: string;
-    start: ReturnType<typeof vi.fn>;
-    succeed: ReturnType<typeof vi.fn>;
-    fail: ReturnType<typeof vi.fn>;
-  }> = [];
-
-  const oraFactory = vi.fn((text: string) => {
-    const spinner = {
-      text,
-      start: vi.fn(() => spinner),
-      succeed: vi.fn(),
-      fail: vi.fn(),
-    };
-    spinnerCalls.push(spinner);
-    return spinner;
-  });
-
+const oraFactory = mock((text: string) => {
+  spinnerCalls.push({ text });
   return {
-    writeFile,
-    generateDependencyReport,
-    renderHtmlReport,
-    serializeReportToJson,
-    oraFactory,
-    spinnerCalls,
-  };
+    text,
+    start: () => ({
+      succeed: () => {},
+      fail: () => {},
+    }),
+  } as any;
 });
 
-vi.mock("../src/graph", () => ({
-  generateDependencyReport: mocks.generateDependencyReport,
-}));
+const chalkStub: Partial<ChalkInstance> = {
+  hex: () => {
+    const fn = (value: string) => value;
+    (fn as any).bold = (value: string) => value;
+    return fn as any;
+  },
+  red: (value: string) => value,
+  gray: (value: string) => value,
+  cyan: (value: string) => value,
+  green: (value: string) => value,
+  yellow: (value: string) => value,
+  bold: (value: string) => value,
+};
 
-vi.mock("../src/utils", () => ({
-  renderHtmlReport: mocks.renderHtmlReport,
-  serializeReportToJson: mocks.serializeReportToJson,
-}));
+let consoleLogSpy: ReturnType<typeof spyOn>;
+let consoleErrorSpy: ReturnType<typeof spyOn>;
+let processExitSpy: ReturnType<typeof spyOn>;
 
-vi.mock("fs/promises", () => {
-  const fsModule = { writeFile: mocks.writeFile };
-  return { ...fsModule, default: fsModule };
-});
-
-vi.mock("ora", () => ({
-  default: mocks.oraFactory,
-}));
-
-vi.spyOn(console, "log").mockImplementation(() => {});
-const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-const processExitSpy = vi
-  .spyOn(process, "exit")
-  .mockImplementation((() => {}) as (code?: string | number | null) => never);
-
-async function executeCLI(): Promise<void> {
-  vi.resetModules();
-  await import("../src/index");
+async function executeCLI(argv: string[]): Promise<void> {
+  process.argv = ["node", "index.ts", ...argv];
+  await import(`../src/index?run=${Math.random()}`);
 }
 
 beforeEach(() => {
-  vi.clearAllMocks();
-  vi.useFakeTimers();
-  process.argv = ["node", "index.ts"];
-  mocks.spinnerCalls.length = 0;
-
-  mocks.generateDependencyReport.mockImplementation(async (options) => {
-    options.onProgress?.("Scanning packages...", 42);
-    return {
-      rootDir: options.rootDir ?? ".",
-      packages: [
-        {
-          name: "@scope/pkg-a",
-          version: "1.0.0",
-          description: "",
-          relativeDir: "packages/pkg-a",
-          dependencies: [],
-          declaredDeps: [],
-          undeclaredDeps: [],
-          references: 0,
-          cyclicDeps: [],
-          fileCount: 1,
-          isRoot: options.rootDir === "pkg-a",
-          hasTsconfig: false,
-          hasTailwindConfig: false,
-          hasAutoprefixer: false,
-          hasEslintConfig: false,
-          hasChildPackages: false,
-          toolingDeps: [],
-          externalDependencies: [],
-          undeclaredExternalDeps: [],
-          unusedExternalDeps: [],
-        },
-      ],
-    };
-  });
-
-  mocks.renderHtmlReport.mockResolvedValue("<html>report</html>");
-  mocks.serializeReportToJson.mockReturnValue('{"ok":true}');
+  mock.clearAllMocks();
+  spinnerCalls.length = 0;
+  (globalThis as any).__retracifyMocks = {
+    startLiveUiServer,
+    ora: oraFactory,
+    chalk: chalkStub,
+  };
+  consoleLogSpy = spyOn(console, "log").mockImplementation(() => {});
+  consoleErrorSpy = spyOn(console, "error").mockImplementation(() => {});
+  processExitSpy = spyOn(process, "exit").mockImplementation((() => {}) as any);
 });
 
 afterEach(() => {
-  vi.runAllTimers();
-  vi.useRealTimers();
+  delete (globalThis as any).__retracifyMocks;
+  processExitSpy.mockRestore();
+  consoleLogSpy.mockRestore();
+  consoleErrorSpy.mockRestore();
 });
 
-describe("index.ts (CLI Entry Point)", () => {
-  test("calls generateDependencyReport with defaults and writes HTML output", async () => {
-    await executeCLI();
-    vi.runAllTimers();
+describe("CLI entrypoint", () => {
+  test("starts live UI with default options", async () => {
+    startLiveUiServer.mockResolvedValue();
 
-    expect(mocks.generateDependencyReport).toHaveBeenCalledWith(
+    await executeCLI([]);
+
+    expect(processExitSpy).not.toHaveBeenCalled();
+    expect(startLiveUiServer).toHaveBeenCalledTimes(1);
+    expect(startLiveUiServer).toHaveBeenCalledWith(
       expect.objectContaining({
         rootDir: ".",
-        onProgress: expect.any(Function),
+        port: 4173,
+        host: "127.0.0.1",
+        autoOpen: true,
       }),
     );
-
-    expect(mocks.renderHtmlReport).toHaveBeenCalledWith(
-      expect.any(Object),
-      ".",
-    );
-    expect(mocks.writeFile).toHaveBeenCalledWith(
-      ".retracify.html",
-      "<html>report</html>",
-      "utf8",
-    );
-    expect(mocks.serializeReportToJson).not.toHaveBeenCalled();
   });
 
-  test("honors CLI args and JSON format", async () => {
-    process.argv = [
-      "node",
-      "index.ts",
-      "my-repo",
-      "output.json",
-      "--json",
-    ];
-    await executeCLI();
-    vi.runAllTimers();
+  test("respects positional root dir and flags", async () => {
+    startLiveUiServer.mockResolvedValue();
 
-    expect(mocks.generateDependencyReport).toHaveBeenCalledWith(
-      expect.objectContaining({ rootDir: "my-repo" }),
-    );
-    expect(mocks.serializeReportToJson).toHaveBeenCalledTimes(1);
-    expect(mocks.renderHtmlReport).not.toHaveBeenCalled();
-    expect(mocks.writeFile).toHaveBeenCalledWith(
-      "output.json",
-      '{"ok":true}',
-      "utf8",
+    await executeCLI(["../packages/app", "--port", "4321", "--host", "0.0.0.0", "--no-open"]);
+
+    expect(startLiveUiServer).toHaveBeenCalledWith(
+      expect.objectContaining({
+        rootDir: "../packages/app",
+        port: 4321,
+        host: "0.0.0.0",
+        autoOpen: false,
+      }),
     );
   });
 
-  test("fails gracefully when graph generation throws", async () => {
-    const error = new Error("Mocked graph generation error");
-    mocks.generateDependencyReport.mockRejectedValueOnce(error);
+  test("shows help and exits when --help is provided", async () => {
+    await executeCLI(["--help"]);
 
-    await executeCLI();
-    vi.runAllTimers();
+    expect(processExitSpy).toHaveBeenCalledWith(0);
+    expect(startLiveUiServer).not.toHaveBeenCalled();
+    expect(consoleLogSpy).toHaveBeenCalled();
+  });
 
-    expect(mocks.writeFile).not.toHaveBeenCalled();
-    expect(mocks.spinnerCalls.at(-1)?.fail).toHaveBeenCalledWith(error.message);
+  test("fails on invalid port", async () => {
+    await executeCLI(["--port", "abc"]);
+
     expect(processExitSpy).toHaveBeenCalledWith(1);
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
+    expect(startLiveUiServer).not.toHaveBeenCalled();
+    expect(consoleErrorSpy).toHaveBeenCalled();
   });
 });

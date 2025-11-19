@@ -1,5 +1,5 @@
 import path from "path";
-import fs from "fs/promises";
+import * as fs from "fs/promises";
 import glob from "fast-glob";
 import os from "os";
 import ejs from "ejs";
@@ -433,44 +433,132 @@ export function normalizeImportSpecifier(spec: string): string {
   return spec.split("/")[0];
 }
 
-export function serializeReportToJson(reportData: {
-  packages: {
-    name: string;
-    version?: string;
-    description?: string;
-    relativeDir?: string;
-    isRoot?: boolean;
-    dependencies: string[];
-    references: number;
-    cyclicDeps: string[];
-    declaredDeps: string[];
-    undeclaredDeps: string[];
-    fileCount?: number;
-    hasTsconfig?: boolean;
-    hasTailwindConfig?: boolean;
-    hasAutoprefixer?: boolean;
-    hasEslintConfig?: boolean;
-    hasChildPackages?: boolean;
-    toolingDeps?: string[];
-    externalDependencies: {
-      name: string;
-      isDeclared: boolean;
-      isUsed: boolean;
-      usageCount: number;
-      declaredInDependencies: boolean;
-      declaredInDevDependencies: boolean;
-      isLikelyTypePackage: boolean;
-      isToolingOnly: boolean;
-    }[];
-    undeclaredExternalDeps: string[];
-    unusedExternalDeps: string[];
-  }[];
+export interface ReportClientMeta {
   rootDir: string;
-}): string {
-  return JSON.stringify(reportData, null, 2);
+  generatedAt: string;
+  systemInfo: string;
+  nodeVersion: string;
 }
 
-export async function renderHtmlReport(
+export interface ReportClientSummary {
+  packageCount: number;
+  dependencyCount: number;
+  cyclicDependencyCount: number;
+  cyclePackageCount: number;
+  undeclaredDependencyCount: number;
+  runtimeExternalCount: number;
+  toolingExternalCount: number;
+  typeExternalCount: number;
+  toolingDependencyCount: number;
+  packagesWithIssues: number;
+  averageDependencyCount: number;
+  averageToolingDeps: number;
+}
+
+export interface ReportClientPackage {
+  name: string;
+  version?: string;
+  description?: string;
+  relativeDir?: string;
+  isRoot?: boolean;
+  dependencies: string[];
+  references: number;
+  cyclicDeps: string[];
+  declaredDeps: string[];
+  undeclaredDeps: string[];
+  fileCount?: number;
+  hasTsconfig?: boolean;
+  hasTailwindConfig?: boolean;
+  hasAutoprefixer?: boolean;
+  hasEslintConfig?: boolean;
+  hasChildPackages?: boolean;
+  toolingDeps?: string[];
+  dependencyDetails?: DependencyDetail[];
+  externalDependencies: {
+    name: string;
+    isDeclared: boolean;
+    isUsed: boolean;
+    usageCount: number;
+    declaredInDependencies: boolean;
+    declaredInDevDependencies: boolean;
+    isLikelyTypePackage: boolean;
+    isToolingOnly: boolean;
+  }[];
+  undeclaredExternalDeps: string[];
+  unusedExternalDeps: string[];
+  displayName: string;
+  anchorId: string;
+  severityLevel: "stable" | "watch" | "critical";
+  hasIssues: boolean;
+  dependencyBadges: {
+    name: string;
+    anchor: string;
+    isWorkspace: boolean;
+    isDevOnly: boolean;
+    isCyclic: boolean;
+    isUndeclared: boolean;
+    isDeclaredInProd: boolean;
+    isDeclaredInDev: boolean;
+  }[];
+  dependencyDrilldown: {
+    name: string;
+    fileCount: number;
+    files: string[];
+  }[];
+  externalDependencyBadges: {
+    name: string;
+    isDeclared: boolean;
+    isUsed: boolean;
+    usageCount: number;
+    declaredInDependencies: boolean;
+    declaredInDevDependencies: boolean;
+    isLikelyTypePackage: boolean;
+    isToolingOnly: boolean;
+    isTypeOnly: boolean;
+    isDevOnly: boolean;
+    scopeLabel: string | null;
+  }[];
+  runtimeExternalCount?: number;
+  toolingDepsList: string[];
+  declaredDependencyCount: number;
+  declaredDevDependencyCount: number;
+  declaredProdDependencies: string[];
+  declaredDevDependencies: string[];
+  dependentsCount?: number;
+}
+
+export interface ReportClientCycleEdge {
+  fromName: string;
+  fromAnchor: string;
+  toName: string;
+  toAnchor: string;
+  edgeCount: number;
+  referenceFileCount: number;
+  sampleFiles: { ownerName: string; ownerAnchor: string; file: string }[];
+  severity: "low" | "medium" | "high";
+}
+
+export interface ReportClientPayload {
+  summary: ReportClientSummary;
+  packages: ReportClientPackage[];
+  insights: {
+    cycles: {
+      packageCount: number;
+      edgeCount: number;
+      edges: ReportClientCycleEdge[];
+    };
+  };
+  meta: ReportClientMeta;
+}
+
+export interface BuildClientViewModelResult {
+  payload: ReportClientPayload;
+  generatedAt: string;
+  systemInfo: string;
+  nodeVersion: string;
+}
+
+export function buildClientViewModel(
   reportData: {
     packages: {
       name: string;
@@ -506,8 +594,7 @@ export async function renderHtmlReport(
     }[];
     rootDir: string;
   },
-  projectRoot: string,
-): Promise<string> {
+): BuildClientViewModelResult {
   const now = new Date().toLocaleString();
   const systemInfo = `${os.type()} ${os.release()} (${os.arch()})`;
   const nodeVersion = process.version;
@@ -519,6 +606,7 @@ export async function renderHtmlReport(
     packageCount: reportData.packages.length,
     dependencyCount: 0,
     cyclicDependencyCount: 0,
+    cyclePackageCount: 0,
     undeclaredDependencyCount: 0,
     runtimeExternalCount: 0,
     toolingExternalCount: 0,
@@ -526,6 +614,57 @@ export async function renderHtmlReport(
     toolingDependencyCount: 0,
     packagesWithIssues: 0,
   };
+
+  const displayNameByPkg = new Map<string, string>();
+  const anchorIdByPkg = new Map<string, string>();
+
+  reportData.packages.forEach((pkg, index) => {
+    const baseDisplayName =
+      typeof pkg.name === "string" && pkg.name.trim().length > 0
+        ? pkg.name
+        : typeof pkg.relativeDir === "string" && pkg.relativeDir.trim().length > 0
+          ? pkg.relativeDir
+          : `package-${index + 1}`;
+    const registerKeys = new Set<string>();
+    if (typeof pkg.name === "string" && pkg.name.trim().length > 0) {
+      registerKeys.add(pkg.name);
+    }
+    if (typeof pkg.relativeDir === "string" && pkg.relativeDir.trim().length > 0) {
+      registerKeys.add(pkg.relativeDir);
+    }
+    if (registerKeys.size === 0) {
+      registerKeys.add(baseDisplayName);
+    }
+    const anchorId = makeId(baseDisplayName);
+    registerKeys.forEach((key) => {
+      if (!displayNameByPkg.has(key)) {
+        displayNameByPkg.set(key, baseDisplayName);
+      }
+      if (!anchorIdByPkg.has(key)) {
+        anchorIdByPkg.set(key, anchorId);
+      }
+    });
+  });
+
+  const resolveDisplayName = (name: string) =>
+    displayNameByPkg.get(name) ?? name;
+  const resolveAnchorId = (name: string) => anchorIdByPkg.get(name) ?? makeId(name);
+
+  const packagesInCycles = new Set<string>();
+  const cycleEdgeMap = new Map<
+    string,
+    {
+      aKey: string;
+      bKey: string;
+      aName: string;
+      bName: string;
+      aAnchor: string;
+      bAnchor: string;
+      edgeCount: number;
+      referenceFileCount: number;
+      sampleFiles: Map<string, Set<string>>;
+    }
+  >();
 
   const packagesView = reportData.packages.map((pkg, index) => {
     const displayName =
@@ -535,7 +674,12 @@ export async function renderHtmlReport(
           ? pkg.relativeDir
           : `package-${index + 1}`;
 
-    const anchorId = makeId(displayName);
+    const packageKey =
+      typeof pkg.name === "string" && pkg.name.trim().length > 0
+        ? pkg.name
+        : displayName;
+
+    const anchorId = resolveAnchorId(packageKey);
     const toolingList = Array.isArray(pkg.toolingDeps)
       ? Array.from(new Set(pkg.toolingDeps)).sort()
       : [];
@@ -548,6 +692,20 @@ export async function renderHtmlReport(
     const typeExternal = pkg.externalDependencies.filter(
       (dep) => dep.isLikelyTypePackage,
     ).length;
+    const rawDeclaredProd = (pkg as Record<string, unknown>).declaredProdDeps;
+    const declaredProdDeps = Array.isArray(rawDeclaredProd)
+      ? (rawDeclaredProd as string[])
+      : [];
+    const rawDeclaredDev = (pkg as Record<string, unknown>).declaredDevDeps;
+    const declaredDevDeps = Array.isArray(rawDeclaredDev)
+      ? (rawDeclaredDev as string[])
+      : [];
+    const declaredProdSet = new Set(declaredProdDeps);
+    const declaredDevSet = new Set(declaredDevDeps);
+    const devOnlySet = new Set(
+      declaredDevDeps.filter((dep) => !declaredProdSet.has(dep)),
+    );
+
     const dependencyDrilldown = Array.isArray(pkg.dependencyDetails)
       ? pkg.dependencyDetails
           .map((detail: DependencyDetail) => ({
@@ -556,6 +714,71 @@ export async function renderHtmlReport(
             files: Array.isArray(detail.files) ? detail.files : [],
           }))
           .filter((detail: { fileCount: number }) => detail.fileCount > 0)
+      : [];
+    const hasCycles = Array.isArray(pkg.cyclicDeps) && pkg.cyclicDeps.length > 0;
+    const cyclePartners = hasCycles
+      ? pkg.cyclicDeps.map((dep) => {
+          const detail = dependencyDrilldown.find((entry) => entry.name === dep);
+          const partnerDisplayName = resolveDisplayName(dep);
+          const partnerAnchor = resolveAnchorId(dep);
+          const fileCount = detail?.fileCount ?? 0;
+          const sampleEntries = detail?.files
+            ? detail.files
+                .filter((file): file is string => typeof file === "string" && file.length > 0)
+                .slice(0, 3)
+                .map((file) => ({
+                  ownerName: displayName,
+                  ownerAnchor: anchorId,
+                  file,
+                }))
+            : [];
+          const [firstKey, secondKey] =
+            packageKey.localeCompare(dep) <= 0
+              ? [packageKey, dep]
+              : [dep, packageKey];
+          const pairKey = `${firstKey}::${secondKey}`;
+          const existing = cycleEdgeMap.get(pairKey);
+          const normalizedSamples = detail?.files
+            ? detail.files.filter(
+                (file): file is string => typeof file === "string" && file.length > 0,
+              )
+            : [];
+          if (existing) {
+            existing.edgeCount += 1;
+            existing.referenceFileCount += fileCount;
+            const currentSet =
+              existing.sampleFiles.get(packageKey) ?? new Set<string>();
+            normalizedSamples.forEach((file) => currentSet.add(file));
+            existing.sampleFiles.set(packageKey, currentSet);
+          } else {
+            cycleEdgeMap.set(pairKey, {
+              aKey: firstKey,
+              bKey: secondKey,
+              aName: resolveDisplayName(firstKey),
+              bName: resolveDisplayName(secondKey),
+              aAnchor: resolveAnchorId(firstKey),
+              bAnchor: resolveAnchorId(secondKey),
+              edgeCount: 1,
+              referenceFileCount: fileCount,
+              sampleFiles: new Map(
+                normalizedSamples.length
+                  ? [[packageKey, new Set(normalizedSamples)]]
+                  : [],
+              ),
+            });
+          }
+          packagesInCycles.add(packageKey);
+          if (displayNameByPkg.has(dep) || anchorIdByPkg.has(dep)) {
+            packagesInCycles.add(dep);
+          }
+          return {
+            name: dep,
+            displayName: partnerDisplayName,
+            anchor: partnerAnchor,
+            fileCount,
+            sampleFiles: sampleEntries,
+          };
+        })
       : [];
     const undeclaredExternalDeps = pkg.undeclaredExternalDeps ?? [];
     const unusedExternalDeps = pkg.unusedExternalDeps ?? [];
@@ -606,7 +829,7 @@ export async function renderHtmlReport(
       severitySignals.push("Large internal dependency surface");
       severityScore += 1;
     }
-    const severityLevel =
+    const severityLevel: "stable" | "watch" | "critical" =
       severityScore >= 5 ? "critical" : severityScore >= 2 ? "watch" : "stable";
     const severityLabel =
       severityLevel === "critical"
@@ -616,10 +839,10 @@ export async function renderHtmlReport(
           : "Stable";
     const severityToneClass =
       severityLevel === "critical"
-        ? "border border-rose-400/60 bg-rose-500/10 text-rose-100"
+        ? "border-rose-600/50 bg-rose-950/35 text-rose-200"
         : severityLevel === "watch"
-          ? "border border-blue-400/60 bg-blue-500/10 text-blue-100"
-          : "border border-zinc-700 bg-[#111116] text-zinc-300";
+          ? "border-amber-500/45 bg-amber-950/30 text-amber-200"
+          : "border-emerald-500/45 bg-emerald-950/30 text-emerald-200";
 
     summary.dependencyCount += pkg.dependencies.length;
     summary.cyclicDependencyCount += pkg.cyclicDeps.length;
@@ -635,6 +858,7 @@ export async function renderHtmlReport(
       displayName,
       anchorId,
       cyclicCount: pkg.cyclicDeps.length,
+      cyclePartners,
       runtimeExternalCount: runtimeExternal,
       toolingExternalCount: toolingExternal,
       typeExternalCount: typeExternal,
@@ -645,53 +869,101 @@ export async function renderHtmlReport(
       severityToneClass,
       severitySignals,
       severityScore,
+      declaredDependencyCount: declaredProdDeps.length + declaredDevDeps.length,
+      declaredDevDependencyCount: declaredDevDeps.length,
+      declaredProdDependencies: declaredProdDeps,
+      declaredDevDependencies: declaredDevDeps,
       dependencyDrilldown,
-      dependencyBadges: pkg.dependencies.map((dep) => ({
-        name: dep,
-        anchor: makeId(dep),
-        isCyclic: pkg.cyclicDeps.includes(dep),
-        isUndeclared: pkg.undeclaredDeps.includes(dep),
-      })),
+      dependencyBadges: pkg.dependencies.map((dep: string) => {
+        const isCyclic = pkg.cyclicDeps.includes(dep);
+        const isUndeclared = pkg.undeclaredDeps.includes(dep);
+        const isWorkspace = anchorIdByPkg.has(dep);
+        const isDevOnly = devOnlySet.has(dep);
+        return {
+          name: dep,
+          anchor: resolveAnchorId(dep),
+          isCyclic,
+          isUndeclared,
+          isWorkspace,
+          isDevOnly,
+          isDeclaredInProd: declaredProdSet.has(dep),
+          isDeclaredInDev: declaredDevSet.has(dep),
+        };
+      }),
       externalDependencies: pkg.externalDependencies,
       externalDependencyBadges: pkg.externalDependencies.map((dep) => {
         const isTypeOnly = dep.isLikelyTypePackage && !dep.isUsed;
         const isToolingOnly = dep.isToolingOnly && dep.usageCount === 0;
-        const statusLabel = dep.isDeclared
-          ? dep.isUsed
-            ? isToolingOnly
-              ? "Declared • Tooling"
-              : "Declared • Used"
-            : isTypeOnly
-              ? "Declared • Type-only"
-              : "Declared • Unused"
-          : "Undeclared";
+        const isDevOnlyExternal =
+          dep.declaredInDevDependencies && !dep.declaredInDependencies;
         let scopeLabel: string | null = null;
-        let scopeToneClass = "";
-        if (dep.isDeclared) {
-          if (dep.declaredInDependencies && dep.declaredInDevDependencies) {
-            scopeLabel = "Prod+Dev";
-            scopeToneClass = "bg-amber-500/25 text-amber-100";
-          } else if (dep.declaredInDependencies) {
-            scopeLabel = "Prod";
-            scopeToneClass = "bg-emerald-500/20 text-emerald-100";
-          } else if (dep.declaredInDevDependencies) {
-            scopeLabel = "Dev";
-            scopeToneClass = "bg-sky-500/25 text-sky-100";
-          }
+        if (dep.declaredInDevDependencies) {
+          scopeLabel = dep.declaredInDependencies ? "Prod + Dev" : "Dev only";
         }
         return {
           ...dep,
-          statusLabel,
           scopeLabel,
-          scopeToneClass,
           isTypeOnly,
           isToolingOnly,
+          isDevOnly: isDevOnlyExternal,
         };
       }),
       unusedExternalCount: pkg.unusedExternalDeps.length,
       undeclaredExternalCount: pkg.undeclaredExternalDeps.length,
     };
   });
+
+  summary.cyclePackageCount = packagesInCycles.size;
+
+  const cycleEdgeList = Array.from(cycleEdgeMap.values())
+    .map((entry) => {
+      const sampleDetails: {
+        ownerName: string;
+        ownerAnchor: string;
+        file: string;
+      }[] = [];
+      entry.sampleFiles.forEach((files, ownerKey) => {
+        const ownerName = resolveDisplayName(ownerKey);
+        const ownerAnchor = resolveAnchorId(ownerKey);
+        files.forEach((file) => {
+          sampleDetails.push({ ownerName, ownerAnchor, file });
+        });
+      });
+      const sampleFiles = sampleDetails.slice(0, 5);
+      const severity: "low" | "medium" | "high" =
+        entry.referenceFileCount >= 10 || entry.edgeCount >= 6
+          ? "high"
+          : entry.referenceFileCount >= 4 || entry.edgeCount >= 3
+            ? "medium"
+            : "low";
+      return {
+        fromName: entry.aName,
+        fromAnchor: entry.aAnchor,
+        toName: entry.bName,
+        toAnchor: entry.bAnchor,
+        edgeCount: entry.edgeCount,
+        referenceFileCount: entry.referenceFileCount,
+        sampleFiles,
+        severity,
+      };
+    })
+    .sort((a, b) => {
+      if (b.referenceFileCount !== a.referenceFileCount) {
+        return b.referenceFileCount - a.referenceFileCount;
+      }
+      if (b.edgeCount !== a.edgeCount) {
+        return b.edgeCount - a.edgeCount;
+      }
+      const nameA = `${a.fromName}-${a.toName}`;
+      const nameB = `${b.fromName}-${b.toName}`;
+      return nameA.localeCompare(nameB);
+    });
+
+  const cycleInsights = {
+    packageCount: packagesInCycles.size,
+    edgeCount: cycleEdgeList.length,
+    edges: cycleEdgeList,
+  };
 
   const averageDependencyCount =
     summary.packageCount > 0
@@ -702,22 +974,96 @@ export async function renderHtmlReport(
       ? Number((summary.toolingDependencyCount / summary.packageCount).toFixed(1))
       : 0;
 
+  const dependentsByAnchor = new Map<string, Set<string>>();
+  packagesView.forEach((pkg) => {
+    (pkg.dependencyBadges || []).forEach((badge) => {
+      if (!badge.isWorkspace) return;
+      const targetAnchor = badge.anchor;
+      if (!dependentsByAnchor.has(targetAnchor)) {
+        dependentsByAnchor.set(targetAnchor, new Set());
+      }
+      dependentsByAnchor.get(targetAnchor)!.add(pkg.anchorId);
+    });
+  });
+
+  const packagesWithDependents = packagesView.map((pkg) => {
+    const dependentsSet = dependentsByAnchor.get(pkg.anchorId);
+    return {
+      ...pkg,
+      dependentsCount: dependentsSet ? dependentsSet.size : 0,
+    };
+  });
+
   const summaryView = {
     ...summary,
     averageDependencyCount,
     averageToolingDeps,
   };
 
-  const clientPayload = JSON.stringify({
-    summary: summaryView,
-    packages: packagesView,
-    meta: {
-      rootDir: reportData.rootDir,
-      generatedAt: now,
-      systemInfo,
-      nodeVersion,
+  return {
+    payload: {
+      summary: summaryView,
+      packages: packagesWithDependents,
+      insights: {
+        cycles: cycleInsights,
+      },
+      meta: {
+        rootDir: reportData.rootDir,
+        generatedAt: now,
+        systemInfo,
+        nodeVersion,
+      },
     },
-  }).replace(/</g, "\\u003c");
+    generatedAt: now,
+    systemInfo,
+    nodeVersion,
+  };
+}
+
+export async function renderHtmlReport(
+  reportData: {
+    packages: {
+      name: string;
+      version?: string;
+      description?: string;
+      relativeDir?: string;
+      isRoot?: boolean;
+      dependencies: string[];
+      references: number;
+      cyclicDeps: string[];
+      declaredDeps: string[];
+      undeclaredDeps: string[];
+      fileCount?: number;
+      hasTsconfig?: boolean;
+      hasTailwindConfig?: boolean;
+      hasAutoprefixer?: boolean;
+      hasEslintConfig?: boolean;
+      hasChildPackages?: boolean;
+      toolingDeps?: string[];
+      dependencyDetails?: DependencyDetail[];
+      externalDependencies: {
+        name: string;
+        isDeclared: boolean;
+        isUsed: boolean;
+        usageCount: number;
+        declaredInDependencies: boolean;
+        declaredInDevDependencies: boolean;
+        isLikelyTypePackage: boolean;
+        isToolingOnly: boolean;
+      }[];
+      undeclaredExternalDeps: string[];
+      unusedExternalDeps: string[];
+    }[];
+    rootDir: string;
+  },
+  projectRoot: string,
+  options: { liveMode?: boolean; viewModel?: BuildClientViewModelResult } = {},
+): Promise<string> {
+  const viewModel = options.viewModel ?? buildClientViewModel(reportData);
+  const clientPayload = JSON.stringify(viewModel.payload).replace(
+    /</g,
+    "\\u003c",
+  );
 
   const moduleDir = path.dirname(fileURLToPath(import.meta.url));
   const templateCandidates = ["reports.ejs", "report.ejs"];
@@ -773,10 +1119,11 @@ export async function renderHtmlReport(
     templateContent,
     {
       reportData,
-      now,
-      systemInfo,
-      nodeVersion,
+      now: viewModel.generatedAt,
+      systemInfo: viewModel.systemInfo,
+      nodeVersion: viewModel.nodeVersion,
       clientPayload,
+      liveMode: options.liveMode ?? false,
     },
     {
       views: [templatesDir],

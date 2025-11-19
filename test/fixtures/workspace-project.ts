@@ -1,4 +1,4 @@
-import { createFixtureContext, type ProjectFixture } from "./shared";
+import { createFixtureContext, type ProjectFixture } from "./shared.js";
 
 export type WorkspaceFixture = ProjectFixture;
 
@@ -199,6 +199,18 @@ export async function createWorkspaceFixture(): Promise<ProjectFixture> {
   await writeFile(
     "packages/design-system/components/button/src/index.ts",
     `export const Button = () => "button";\n`,
+  );
+
+  await writeFile("packages/type-only/package.json", {
+    name: "@workspace/type-only",
+    version: "1.0.0",
+  });
+  await writeFile(
+    "packages/type-only/src/index.ts",
+    [
+      `import type { ui } from "@workspace/ui";`,
+      `export type { ui };`,
+    ].join("\n"),
   );
 
   return { rootDir, cleanup };

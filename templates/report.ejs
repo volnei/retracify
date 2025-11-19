@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+`<!DOCTYPE html>
 <html lang="en" class="dark-theme">
 <head>
 <meta charset="UTF-8" />
@@ -18,6 +18,7 @@
           sans: ["Geist", "Inter", "system-ui", "sans-serif"],
           mono: ["Geist Mono", "JetBrains Mono", "Menlo", "monospace"],
         },
+
       },
     },
   };
@@ -25,7 +26,15 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   :root { color-scheme: dark; }
-  body { font-family: 'Geist', sans-serif; position: relative; background: radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 60%), #09090b; color: #f4f4f5; }
+  body {
+    font-family: 'Geist', sans-serif;
+    position: relative;
+    background:
+      radial-gradient(120% 160% at 0% 0%, rgba(68, 64, 60, 0.65), transparent 55%),
+      radial-gradient(120% 160% at 100% 0%, rgba(41, 37, 36, 0.55), transparent 55%),
+      linear-gradient(180deg, #11100f 0%, #1c1917 100%);
+    color: #e7e5e4;
+  }
   html { scroll-behavior: smooth; }
   a.no-underline:hover { text-decoration: none !important; }
   .github-corner svg { fill: #151513; color: #ffffff; }
@@ -39,33 +48,59 @@
   }
 </style>
 </head>
-<body class="min-h-screen antialiased text-zinc-100">
-  <a href="https://github.com/volnei/retracify" class="github-corner absolute right-0 top-0 z-40" aria-label="View source on GitHub" target="_blank" rel="noreferrer">
+<body class="min-h-screen bg-stone-950 antialiased text-stone-200">
+  <a href="https://github.com/volnei/retracify" class="github-corner absolute right-0 top-0 z-50" aria-label="View source on GitHub" target="_blank" rel="noreferrer">
     <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 250 250" fill="#151513" style="position: absolute; top: 0; right: 0">
     <path d="M0 0l115 115h15l12 27 108 108V0z" fill="#fff"/>
     <path class="octo-arm" d="M128 109c-15-9-9-19-9-19 3-7 2-11 2-11-1-7 3-2 3-2 4 5 2 11 2 11-3 10 5 15 9 16" style="-webkit-transform-origin: 130px 106px; transform-origin: 130px 106px"/>
     <path class="octo-body" d="M115 115s4 2 5 0l14-14c3-2 6-3 8-3-8-11-15-24 2-41 5-5 10-7 16-7 1-2 3-7 12-11 0 0 5 3 7 16 4 2 8 5 12 9s7 8 9 12c14 3 17 7 17 7-4 8-9 11-11 11 0 6-2 11-7 16-16 16-30 10-41 2 0 3-1 7-5 11l-12 11c-1 1 1 5 1 5z"/>
     </svg>
   </a>
-  <main class="relative mx-auto flex max-w-6xl flex-col gap-12 px-4 py-12 sm:gap-16 sm:px-6 sm:py-16">
-    <div class="rounded-3xl border border-zinc-800/70 bg-[rgba(15,15,18,0.9)] p-6 backdrop-blur-sm sm:p-10">
-      <div class="space-y-10">
-        <%- include('partials/banner') %>
-        <%- include('partials/legend') %>
-        <div id="app-root" class="space-y-8">
-          <div class="flex w-full justify-center py-16">
-            <div class="flex flex-col items-center gap-3 text-sm text-zinc-400">
-              <div class="h-10 w-10 animate-spin rounded-full border-2 border-zinc-700/70 border-t-transparent"></div>
-              <p>Loading interactive overview…</p>
-            </div>
+  <header class="sticky top-0 z-40 border-b border-stone-900/70 bg-stone-950/95 backdrop-blur supports-[backdrop-filter]:bg-stone-950/80">
+    <nav class="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-4 py-4 text-sm text-stone-300 sm:px-6">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-2 rounded-lg border border-stone-800/80 bg-stone-900/70 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.26em] text-stone-200">
+          Atlas Report
+        </span>
+        <ul class="hidden items-center gap-4 text-xs font-semibold uppercase tracking-[0.18em] text-stone-500 sm:flex">
+          <li><a class="transition hover:text-stone-200" data-scroll-to="#overview" href="#overview">Overview</a></li>
+          <li><a class="transition hover:text-stone-200" data-scroll-to="#insights" href="#insights">Cycles</a></li>
+          <li><a class="transition hover:text-stone-200" data-scroll-to="#performance" href="#performance">Performance</a></li>
+          <li><a class="transition hover:text-stone-200" data-scroll-to="#packages" href="#packages">Packages</a></li>
+          <li><a class="transition hover:text-stone-200" data-scroll-to="#risk-guide" href="#risk-guide">Risk guide</a></li>
+        </ul>
+      </div>
+      <a
+        href="https://github.com/volnei/retracify"
+        class="inline-flex items-center gap-2 rounded-full border border-stone-800/80 bg-stone-900/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-stone-300 transition hover:border-stone-600 hover:text-stone-100"
+        target="_blank"
+        rel="noreferrer"
+      >
+        GitHub
+      </a>
+    </nav>
+  </header>
+  <main class="relative mx-auto flex w-full max-w-7xl flex-col gap-12 px-4 py-16 sm:gap-16 sm:px-6">
+    <section class="rounded-xl border border-stone-900/75 bg-stone-950/85 p-6 shadow-[0_32px_80px_-60px_rgba(0,0,0,0.78)] sm:p-10">
+      <%- include('partials/banner') %>
+    </section>
+    <section class="space-y-12" id="atlas-content">
+      <div id="app-root" class="space-y-8">
+        <div class="flex w-full justify-center py-16">
+          <div class="flex flex-col items-center gap-3 text-sm text-stone-400">
+            <div class="h-10 w-10 animate-spin rounded-full border-2 border-stone-800 border-t-transparent"></div>
+            <p>Loading interactive overview...</p>
           </div>
         </div>
-        <%- include('partials/footer') %>
       </div>
-    </div>
+      <%- include('partials/footer') %>
+    </section>
   </main>
-  <button id="scrollTop" type="button" aria-label="Scroll to top" class="fixed bottom-8 right-8 z-40 hidden h-12 w-12 items-center justify-center rounded-full border border-zinc-800 bg-[#0f0f13] text-lg text-zinc-300 shadow-[0_16px_32px_-20px_rgba(8,8,10,0.6)] transition hover:-translate-y-1 hover:bg-[#111116] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-zinc-500">
-    ⬆
+  <button id="scrollTop" type="button" aria-label="Scroll to top" class="fixed bottom-8 right-8 z-40 hidden h-12 w-12 items-center justify-center rounded-full border border-stone-900 bg-stone-950/80 text-stone-200 shadow-[0_20px_40px_-24px_rgba(0,0,0,0.7)] transition hover:-translate-y-1 hover:bg-stone-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-stone-400/80">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" x2="12" y1="19" y2="5"></line>
+      <polyline points="5 12 12 5 19 12"></polyline>
+    </svg>
   </button>
   <script>
     const starsBadge = document.getElementById("githubStars");
@@ -78,12 +113,14 @@
           }
           const count = data.stargazers_count;
           const formatted = count.toLocaleString();
-          starsBadge.innerHTML = '<span>★</span>' +
+          const starSvg = '<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.31 4.68L19.5 8.4l-3.66 3.57.86 5.03L12 14.77 7.3 17l.86-5.03L4.5 8.4l5.19-.72L12 3z"></path></svg>';
+          starsBadge.innerHTML = starSvg +
             '<span>' + formatted + ' stars</span>';
         })
         .catch(() => {
-          starsBadge.innerHTML = '<span>★</span>' +
-            '<span>on github</span>';
+          const starSvg = '<svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.31 4.68L19.5 8.4l-3.66 3.57.86 5.03L12 14.77 7.3 17l.86-5.03L4.5 8.4l5.19-.72L12 3z"></path></svg>';
+          starsBadge.innerHTML = starSvg +
+            '<span>on GitHub</span>';
         });
     }
 
@@ -103,8 +140,36 @@
   <script type="module">
     import { h, render } from "https://esm.sh/preact@10.19.3";
     import { html } from "https://esm.sh/htm@3.1.1/preact";
-    import { useMemo, useRef, useState } from "https://esm.sh/preact@10.19.3/hooks";
+    import { useEffect, useMemo, useRef, useState } from "https://esm.sh/preact@10.19.3/hooks";
+    import {
+      AlertTriangle,
+      RefreshCw,
+      Package as PackageIcon,
+      Code2,
+      Wrench,
+      FileCode,
+      GitBranch,
+      ExternalLink,
+      Users as UsersIcon,
+      Check as CheckIcon,
+      Clock,
+      Search as SearchIcon,
+      List as ListIcon,
+      ShieldAlert,
+      ShieldQuestion,
+      ShieldCheck,
+      Folder as FolderIcon,
+      FileText,
+      Copy as CopyIcon,
+      Link2,
+      X as XIcon,
+    } from "https://esm.sh/lucide-preact@0.473.0";
     const cx = (...classes) => classes.filter(Boolean).join(" ");
+
+    const isLiveMode = <%= liveMode ? "true" : "false" %>;
+    if (isLiveMode) {
+      window.__retracifyLiveMode = true;
+    }
 
     const payloadEl = document.getElementById("reportData");
     const fallbackPayload = {
@@ -112,6 +177,7 @@
         packageCount: 0,
         dependencyCount: 0,
         cyclicDependencyCount: 0,
+        cyclePackageCount: 0,
         undeclaredDependencyCount: 0,
         runtimeExternalCount: 0,
         toolingExternalCount: 0,
@@ -122,6 +188,13 @@
         averageToolingDeps: 0,
       },
       packages: [],
+      insights: {
+        cycles: {
+          packageCount: 0,
+          edgeCount: 0,
+          edges: [],
+        },
+      },
       meta: {
         rootDir: "",
         generatedAt: "",
@@ -130,162 +203,774 @@
       },
     };
 
+    const KeySignals = ({ summary }) => {
+      const signals = [
+        {
+          label: "Packages needing review",
+          value: summary.packagesWithIssues ?? 0,
+          helper: "Flagged by undeclared deps, cycles, or unused installs.",
+          icon: Icon.alert,
+        },
+        {
+          label: "Cycle participants",
+          value: summary.cyclePackageCount ?? 0,
+          helper: `${summary.cyclicDependencyCount ?? 0} cyclic edges detected.`,
+          icon: Icon.cycle,
+        },
+        {
+          label: "Missing declarations",
+          value: summary.undeclaredDependencyCount ?? 0,
+          helper: "Imports without manifest coverage.",
+          icon: Icon.external,
+        },
+        {
+          label: "Tooling-heavy packages",
+          value: summary.toolingDependencyCount ?? 0,
+          helper: "Configs & scripts that may slow setup.",
+          icon: Icon.tool,
+        },
+      ];
+
+      const tone = (value) =>
+        value === 0
+          ? "border-emerald-500/30 bg-emerald-900/20 text-emerald-100"
+          : value < 3
+            ? "border-amber-500/30 bg-amber-900/20 text-amber-100"
+            : "border-rose-500/30 bg-rose-900/25 text-rose-100";
+
+      return html`
+        <section class="rounded-xl border border-stone-900/70 bg-stone-950/80 p-6">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Key signals</p>
+              <p class="text-sm text-stone-400">Start with the riskiest areas before diving into individual packages.</p>
+            </div>
+          </div>
+          <div class="mt-4 grid gap-4 md:grid-cols-2">
+            ${signals.map(
+              (signal, index) => html`<article
+                key=${index}
+                class=${`rounded-xl border ${tone(signal.value)} p-4`}
+              >
+                <div class="flex items-center gap-3">
+                  <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-black/20">
+                    ${signal.icon("h-4 w-4")}
+                  </span>
+                  <div>
+                    <p class="text-[11px] font-semibold uppercase tracking-wide text-stone-200">${signal.label}</p>
+                    <p class="text-2xl font-semibold text-stone-50">${signal.value}</p>
+                  </div>
+                </div>
+                <p class="mt-3 text-xs text-stone-200/80">${signal.helper}</p>
+              </article>`,
+            )}
+          </div>
+        </section>
+      `;
+    };
+
+    const mergePayload = (input = {}) => ({
+      summary: {
+        ...fallbackPayload.summary,
+        ...((input && typeof input === "object" && input.summary) || {}),
+      },
+      packages: Array.isArray(input?.packages) ? input.packages : [],
+      insights: {
+        cycles: {
+          ...fallbackPayload.insights.cycles,
+          ...((input?.insights && input.insights.cycles) || {}),
+          edges: Array.isArray(input?.insights?.cycles?.edges)
+            ? input.insights.cycles.edges
+            : fallbackPayload.insights.cycles.edges,
+        },
+      },
+      meta: {
+        ...fallbackPayload.meta,
+        ...((input && typeof input === "object" && input.meta) || {}),
+      },
+    });
+
+    const RiskGuide = () => {
+      const scoringTiers = [
+        {
+          label: "High risk",
+          description: "score ≥ 5 points",
+          icon: Icon.severityHigh("h-4 w-4 text-rose-300"),
+        },
+        {
+          label: "Needs review",
+          description: "score 2‑4 points",
+          icon: Icon.severityMedium("h-4 w-4 text-amber-300"),
+        },
+        {
+          label: "Stable",
+          description: "score < 2 points",
+          icon: Icon.severityLow("h-4 w-4 text-emerald-300"),
+        },
+      ];
+      const heuristics = [
+        {
+          icon: Icon.cycle("h-4 w-4 text-rose-300"),
+          title: "Cyclic edges",
+          detail: "Each package pair in a cycle adds +3 points.",
+        },
+        {
+          icon: Icon.alert("h-4 w-4 text-amber-300"),
+          title: "Undeclared internals",
+          detail: "+2 points per missing workspace dependency (up to +4).",
+        },
+        {
+          icon: Icon.external("h-4 w-4 text-amber-200"),
+          title: "Undeclared externals",
+          detail: "+2 points per missing external package (up to +4).",
+        },
+        {
+          icon: Icon.check("h-4 w-4 text-emerald-300"),
+          title: "Unused externals",
+          detail: "+1 point for each unused external dependency (up to +3).",
+        },
+        {
+          icon: Icon.external("h-4 w-4 text-sky-300"),
+          title: "High runtime footprint",
+          detail: "+1 point if more than 12 runtime externals are present.",
+        },
+        {
+          icon: Icon.dependency("h-4 w-4 text-stone-200"),
+          title: "Large internal surface",
+          detail: "+1 point when a package depends on over 15 workspace modules.",
+        },
+      ];
+      return html`
+        <section class="rounded-lg border border-stone-900/70 bg-stone-950/75 p-6 shadow-[0_14px_40px_-32px_rgba(0,0,0,0.7)]">
+          <div class="space-y-2">
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-stone-400">Risk heuristics</h3>
+            <p class="text-sm text-stone-500">
+              Retracify derives a severity score by adding points for the signals below. Thresholds determine
+              whether a package is marked stable, needs review, or high risk.
+            </p>
+          </div>
+          <div class="mt-4 grid gap-3 md:grid-cols-2">
+            ${heuristics.map(
+              (item) => html`<article key=${item.title} class="flex items-start gap-3 rounded-md border border-stone-900/70 bg-stone-950/60 px-4 py-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-md bg-stone-900/50 text-stone-200">
+                  ${item.icon}
+                </span>
+                <div class="space-y-1">
+                  <p class="text-xs font-semibold uppercase tracking-wide text-stone-200">${item.title}</p>
+                  <p class="text-xs text-stone-400">${item.detail}</p>
+                </div>
+              </article>`,
+            )}
+          </div>
+          <div class="mt-5 flex flex-wrap items-center gap-3 text-xs text-stone-400">
+            ${scoringTiers.map(
+              (tier) => html`<span key=${tier.label} class="inline-flex items-center gap-2 rounded-full border border-stone-900/70 bg-stone-950/60 px-3 py-1">
+                ${tier.icon}
+                <span class="font-semibold text-stone-200">${tier.label}</span>
+                <span class="text-stone-400">${tier.description}</span>
+              </span>`,
+            )}
+          </div>
+        </section>
+      `;
+    };
+
+    let rawPayload = payloadEl?.textContent || "{}";
     let parsedPayload = fallbackPayload;
     if (payloadEl) {
       try {
-        parsedPayload = JSON.parse(payloadEl.textContent || "{}") || fallbackPayload;
+        parsedPayload = JSON.parse(rawPayload || "{}") || fallbackPayload;
       } catch (error) {
         console.error("Failed to parse report payload", error);
       }
     }
 
-    const payload = {
-      summary: { ...fallbackPayload.summary, ...(parsedPayload.summary || {}) },
-      packages: Array.isArray(parsedPayload.packages) ? parsedPayload.packages : [],
-      meta: { ...fallbackPayload.meta, ...(parsedPayload.meta || {}) },
+    const liveModeActive = Boolean(window.__retracifyLiveMode);
+    let liveStatus = liveModeActive
+      ? { message: "Preparing workspace…" }
+      : null;
+    let payload = mergePayload(parsedPayload);
+
+    const Icon = {
+      cycle: (className = "h-4 w-4") => html`<${RefreshCw} class=${className} strokeWidth=${1} />`,
+      alert: (className = "h-4 w-4") =>
+        html`<${AlertTriangle} class=${className} strokeWidth=${1} />`,
+      package: (className = "h-4 w-4") =>
+        html`<${PackageIcon} class=${className} strokeWidth=${1} />`,
+      dev: (className = "h-4 w-4") => html`<${Code2} class=${className} strokeWidth=${1} />`,
+      tool: (className = "h-4 w-4") => html`<${Wrench} class=${className} strokeWidth=${1} />`,
+      type: (className = "h-4 w-4") => html`<${FileCode} class=${className} strokeWidth=${1} />`,
+      dependency: (className = "h-4 w-4") =>
+        html`<${GitBranch} class=${className} strokeWidth=${1} />`,
+      external: (className = "h-4 w-4") =>
+        html`<${ExternalLink} class=${className} strokeWidth=${1} />`,
+      users: (className = "h-4 w-4") =>
+        html`<${UsersIcon} class=${className} strokeWidth=${1} />`,
+      check: (className = "h-4 w-4") => html`<${CheckIcon} class=${className} strokeWidth=${1} />`,
+      clock: (className = "h-4 w-4") => html`<${Clock} class=${className} strokeWidth=${1} />`,
+      search: (className = "h-4 w-4") => html`<${SearchIcon} class=${className} strokeWidth=${1} />`,
+      list: (className = "h-4 w-4") => html`<${ListIcon} class=${className} strokeWidth=${1} />`,
+      severityHigh: (className = "h-4 w-4") =>
+        html`<${ShieldAlert} class=${className} strokeWidth=${1} />`,
+      severityMedium: (className = "h-4 w-4") =>
+        html`<${ShieldQuestion} class=${className} strokeWidth=${1} />`,
+      severityLow: (className = "h-4 w-4") =>
+        html`<${ShieldCheck} class=${className} strokeWidth=${1} />`,
+      folder: (className = "h-4 w-4") => html`<${FolderIcon} class=${className} strokeWidth=${1} />`,
+      file: (className = "h-4 w-4") => html`<${FileText} class=${className} strokeWidth=${1} />`,
+      copy: (className = "h-4 w-4") => html`<${CopyIcon} class=${className} strokeWidth=${1} />`,
+      link: (className = "h-4 w-4") => html`<${Link2} class=${className} strokeWidth=${1} />`,
+      x: (className = "h-4 w-4") => html`<${XIcon} class=${className} strokeWidth=${1} />`,
     };
 
-    const buttonBase = "flex w-full items-center justify-center rounded-full border px-4 py-2.5 text-sm font-medium transition-colors sm:w-auto sm:px-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-400/60";
+    const Legend = () => {
+      const entries = [
+        {
+          icon: Icon.cycle("h-4 w-4 text-rose-300"),
+          bg: "bg-rose-900/40",
+          title: "Circular dependency",
+          description: "Edges that complete cycles between packages.",
+        },
+        {
+          icon: Icon.alert("h-4 w-4 text-amber-300"),
+          bg: "bg-amber-900/30",
+          title: "Undeclared usage",
+          description: "Imports missing from package manifests.",
+        },
+        {
+          icon: Icon.package("h-4 w-4 text-emerald-200"),
+          bg: "bg-emerald-900/30",
+          title: "Declared dependency",
+          description: "Runtime dependency tracked in workspace manifests.",
+        },
+        {
+          icon: Icon.dev("h-4 w-4 text-sky-200"),
+          bg: "bg-sky-900/35",
+          title: "Dev-only dependency",
+          description: "Declared only under devDependencies.",
+        },
+        {
+          icon: Icon.tool("h-4 w-4 text-stone-200"),
+          bg: "bg-stone-900",
+          title: "Tooling dependency",
+          description: "Detected via configs or package scripts.",
+        },
+        {
+          icon: Icon.type("h-4 w-4 text-purple-200"),
+          bg: "bg-purple-900/30",
+          title: "Type-only dependency",
+          description: "Type packages without runtime usage.",
+        },
+      ];
 
-    const SummaryCards = ({ summary, meta }) => html`
-      <section class="space-y-5">
-        <div class="flex flex-col gap-4 rounded-2xl border border-zinc-800/70 bg-[#0f0f13]/80 p-5 md:flex-row md:items-center md:justify-between">
-          <div class="space-y-1">
-            <h2 class="text-lg font-semibold text-zinc-100">Explore the report</h2>
-            <p class="text-sm text-zinc-400">Inspect each workspace, filter by health, and map their relationships.</p>
+      return html`
+        <section class="rounded-xl border border-stone-900/70 bg-stone-950/80 p-5">
+          <h2 class="text-xs font-semibold uppercase tracking-[0.26em] text-stone-500">Legend</h2>
+          <div class="mt-4 space-y-3">
+            ${entries.map(
+              (entry, idx) => html`<article
+                key=${idx}
+                class="flex items-start gap-3 rounded-lg border border-stone-900/70 bg-stone-950/60 px-4 py-3"
+              >
+                <span class=${`flex h-9 w-9 items-center justify-center rounded-md ${entry.bg}`}>${entry.icon}</span>
+                <div class="space-y-1">
+                  <p class="text-xs font-semibold uppercase tracking-wide text-stone-200">${entry.title}</p>
+                  <p class="text-xs text-stone-400">${entry.description}</p>
+                </div>
+              </article>`,
+            )}
           </div>
-          <div class="flex flex-col text-right font-mono text-[11px] uppercase tracking-[0.25em] text-zinc-500">
-            <span>Generated <span class="text-zinc-100">${meta.generatedAt}</span></span>
-            <span>Runtime <span class="text-zinc-100">${meta.nodeVersion}</span></span>
-            <span>Host <span class="text-zinc-100">${meta.systemInfo}</span></span>
-          </div>
-        </div>
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="space-y-1 rounded-2xl border border-zinc-800 bg-[#111116] p-4">
-            <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Packages</p>
-            <p class="text-lg font-semibold text-zinc-100">
-              ${summary.packageCount}
-              <span class="text-sm font-medium text-zinc-400">• ${summary.packagesWithIssues} need attention</span>
-            </p>
-            <p class="text-xs text-zinc-500">Root directory: <span class="text-zinc-200">${meta.rootDir}</span></p>
-          </div>
-          <div class="space-y-1 rounded-2xl border border-zinc-800 bg-[#111116] p-4">
-            <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Internal dependencies</p>
-            <p class="text-lg font-semibold text-zinc-100">
-              ${summary.dependencyCount}
-              <span class="text-sm font-medium text-zinc-400">avg ${summary.averageDependencyCount}</span>
-            </p>
-            <p class="text-xs text-zinc-500">Cyclic edges: <span class="text-zinc-200">${summary.cyclicDependencyCount}</span></p>
-          </div>
-          <div class="space-y-1 rounded-2xl border border-zinc-800 bg-[#111116] p-4">
-            <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">External footprint</p>
-            <p class="text-lg font-semibold text-zinc-100">${summary.runtimeExternalCount}</p>
-            <p class="text-xs text-zinc-500">Type-only:${" "}<span class="text-zinc-300">${summary.typeExternalCount}</span></p>
-          </div>
-          <div class="space-y-1 rounded-2xl border border-zinc-800 bg-[#111116] p-4">
-            <p class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Tooling footprint</p>
-            <p class="text-lg font-semibold text-zinc-100">${summary.toolingExternalCount}
-              <span class="text-sm font-medium text-zinc-400">tool deps</span>
-            </p>
-            <p class="text-xs text-zinc-500">Configs/scripts:<span class="text-zinc-200"> ${summary.toolingDependencyCount}</span> • avg ${summary.averageToolingDeps}</p>
-          </div>
-        </div>
-      </section>
-    `;
+        </section>
+      `;
+    };
 
-    const ViewToggle = ({ view, onChange }) => html`
-      <div class="flex flex-col items-stretch gap-2 rounded-xl border border-zinc-800/70 bg-[#111116] p-2 sm:inline-flex sm:flex-row sm:items-center sm:gap-3">
-        <button
-          type="button"
-          class=${cx(
-            buttonBase,
-            view === "list"
-              ? "border-zinc-200/60 bg-[#1c1c24] text-zinc-50 shadow-[0_12px_32px_-24px_rgba(0,0,0,0.85)]"
-              : "border-zinc-800/80 bg-[#12121a] text-zinc-300 hover:border-zinc-600 hover:text-zinc-100"
-          )}
-          aria-pressed=${view === "list"}
-          onClick=${() => onChange("list")}
-        >List View</button>
-        <button
-          type="button"
-          class=${cx(
-            buttonBase,
-            view === "blocks"
-              ? "border-zinc-200/60 bg-[#1c1c24] text-zinc-50 shadow-[0_12px_32px_-24px_rgba(0,0,0,0.85)]"
-              : "border-zinc-800/80 bg-[#12121a] text-zinc-300 hover:border-zinc-600 hover:text-zinc-100"
-          )}
-          aria-pressed=${view === "blocks"}
-          onClick=${() => onChange("blocks")}
-        >Blocks View</button>
-      </div>
-    `;
+    const derivePerformanceInsights = (packages) => {
+      const makeEntry = (pkg) => ({
+        name: pkg.displayName,
+        anchor: pkg.anchorId,
+        severity: pkg.severityLevel,
+      });
+
+      const heavyFanout = packages
+        .map((pkg) => ({
+          ...makeEntry(pkg),
+          deps: pkg.dependencies.length,
+          externals: pkg.runtimeExternalCount ?? 0,
+          tooling: pkg.toolingDepsList.length,
+          score:
+            pkg.dependencies.length * 1.3 +
+            (pkg.runtimeExternalCount ?? 0) * 1.8 +
+            pkg.toolingDepsList.length * 0.8,
+        }))
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+
+      const externalHubs = packages
+        .map((pkg) => ({
+          ...makeEntry(pkg),
+          externals: pkg.externalDependencyBadges.length,
+          undeclared: pkg.undeclaredExternalCount ?? 0,
+        }))
+        .sort((a, b) => b.externals - a.externals)
+        .slice(0, 5);
+
+      const toolingSurface = packages
+        .map((pkg) => ({
+          ...makeEntry(pkg),
+          tooling: pkg.toolingDepsList.length,
+        }))
+        .sort((a, b) => b.tooling - a.tooling)
+        .slice(0, 5);
+
+      return { heavyFanout, externalHubs, toolingSurface };
+    };
+
+    const LiveStatusToast = ({ status }) => {
+      const [visible, setVisible] = useState(status ? { ...status } : null);
+
+      useEffect(() => {
+        if (!status) {
+          setVisible(null);
+          return;
+        }
+        const next = { ...status };
+        setVisible(next);
+        if (typeof status.progress === "number") {
+          return;
+        }
+        const timer = window.setTimeout(() => {
+          setVisible((current) =>
+            current && current.message === next.message ? null : current,
+          );
+        }, 4000);
+        return () => window.clearTimeout(timer);
+      }, [status?.message, status?.progress]);
+
+      if (!visible) return null;
+      const isProgress = typeof visible.progress === "number";
+      const isFailure =
+        typeof visible.message === "string" &&
+        visible.message.toLowerCase().startsWith("failed");
+      const tone = isFailure
+        ? "border-rose-600/60 bg-rose-950/80 text-rose-100"
+        : isProgress
+          ? "border-sky-500/60 bg-sky-950/80 text-sky-100"
+          : "border-emerald-500/60 bg-emerald-950/80 text-emerald-100";
+      const icon = isFailure
+        ? Icon.alert("h-3.5 w-3.5")
+        : isProgress
+          ? Icon.cycle("h-3.5 w-3.5 animate-spin")
+          : Icon.check("h-3.5 w-3.5");
+
+      return html`
+        <div
+          class=${`pointer-events-none fixed left-1/2 top-6 z-50 flex -translate-x-1/2 items-center gap-3 rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-wide shadow-[0_20px_45px_-30px_rgba(0,0,0,0.85)] ${tone}`}
+        >
+          <span class="flex items-center gap-2">
+            ${icon}
+            <span>${visible.message}</span>
+          </span>
+          ${isProgress
+            ? html`<span class="font-mono text-xs">${Math.round(visible.progress)}%</span>`
+            : null}
+        </div>
+      `;
+    };
+
+    const PerformancePanel = ({ data }) => {
+      if (!data) return null;
+      const renderList = (title, description, items, metricLabel, icon) => html`
+        <article class="space-y-3 rounded-xl border border-stone-900/60 bg-stone-950/65 p-4">
+          <header class="space-y-1">
+            <p class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-stone-400">
+              ${icon}
+              ${title}
+            </p>
+            <p class="text-xs text-stone-500">${description}</p>
+          </header>
+          <ol class="space-y-2 text-sm text-stone-300">
+            ${items.length
+              ? items.map((item, index) => html`<li
+                  key=${item.anchor}
+                  class="flex items-center justify-between gap-3 rounded-lg border border-stone-900/60 bg-stone-950/60 px-3 py-2"
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="text-xs font-mono text-stone-500">${index + 1}</span>
+                    <a class="text-sm font-semibold text-stone-100 underline-offset-4 transition hover:text-stone-50 hover:underline" href=${`#${item.anchor}`}>
+                      ${item.name}
+                    </a>
+                    ${item.severity === "critical"
+                      ? html`<span class="inline-flex items-center gap-1 rounded-full bg-rose-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-rose-200">
+                          ${Icon.severityHigh("h-3 w-3")}
+                          High risk
+                        </span>`
+                      : null}
+                  </div>
+                  <span class="font-mono text-xs text-stone-400">${metricLabel(item)}</span>
+                </li>`)
+              : html`<li class="rounded-lg border border-stone-900/60 bg-stone-950/60 px-3 py-2 text-xs text-stone-500">
+                  No signals detected.
+                </li>`}
+          </ol>
+        </article>`;
+
+      const copyDiagnostics = () => {
+        const script = `pnpm tsc --extendedDiagnostics > .retracify/tsc-metrics.log`;
+        if (navigator?.clipboard?.writeText) {
+          navigator.clipboard.writeText(script).catch(() => {
+            window.prompt("Copy command", script);
+          });
+        } else {
+          window.prompt("Copy command", script);
+        }
+      };
+
+      return html`
+        <section class="space-y-6 rounded-xl border border-stone-900/70 bg-stone-950/75 p-6">
+          <header class="space-y-2">
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-stone-400">Performance outlook</h3>
+            <p class="text-sm text-stone-500">
+              Use these heuristics to anticipate slow rebuilds. Pair them with compiler diagnostics to confirm
+              which files are truly expensive.
+            </p>
+          </header>
+          <div class="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+            ${renderList(
+              "High fan-out modules",
+              "Large dependency footprints often slow incremental builds.",
+              data.heavyFanout,
+              (item) => `${item.deps} deps · ${item.externals} externals · ${item.tooling} tooling`,
+              Icon.dependency("h-4 w-4 text-sky-200"),
+            )}
+            ${renderList(
+              "External hubs",
+              "Modules importing many packages are prime candidates for code-splitting.",
+              data.externalHubs,
+              (item) => `${item.externals} externals${item.undeclared ? ` · ${item.undeclared} missing` : ""}`,
+              Icon.external("h-4 w-4 text-amber-200"),
+            )}
+            ${renderList(
+              "Tooling weight",
+              "Heavy tooling footprints often correlate with longer dev server boot times.",
+              data.toolingSurface,
+              (item) => `${item.tooling} tooling deps`,
+              Icon.tool("h-4 w-4 text-emerald-200"),
+            )}
+          </div>
+          <div class="rounded-xl border border-stone-900/70 bg-stone-950/60 p-4 text-sm text-stone-300">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="space-y-1">
+                <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Capture real diagnostics</p>
+                <p class="text-xs text-stone-400">
+                  Run <code>tsc --extendedDiagnostics</code> or <code>babel --profile</code> in CI, publish the JSON next to your atlas, and Retracify can ingest the results on the next scan.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick=${copyDiagnostics}
+                class="inline-flex items-center gap-2 rounded-full border border-stone-800/70 bg-stone-900/70 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-stone-200 transition hover:border-stone-600 hover:text-stone-100"
+              >
+                ${Icon.copy("h-3 w-3")}
+                Copy TS diagnostics command
+              </button>
+            </div>
+          </div>
+        </section>
+      `;
+    };
+
+    document.querySelectorAll("[data-icon]").forEach((placeholder) => {
+      const iconKey = placeholder.getAttribute("data-icon");
+      const renderIcon = iconKey ? Icon[iconKey] : null;
+      if (typeof renderIcon === "function") {
+        const iconClass = placeholder.getAttribute("data-icon-class") || "h-5 w-5";
+        render(renderIcon(iconClass), placeholder);
+      }
+    });
+    const SummaryCards = ({ summary, meta }) => {
+      const statCards = [
+        {
+          icon: Icon.package("h-4 w-4 text-emerald-200"),
+          label: "Packages",
+          value: summary.packageCount ?? 0,
+          helper: `${summary.packagesWithIssues ?? 0} flagged`,
+        },
+        {
+          icon: Icon.dependency("h-4 w-4 text-sky-200"),
+          label: "Graph edges",
+          value: summary.dependencyCount ?? 0,
+          helper: `Avg ${summary.averageDependencyCount ?? 0} per package`,
+        },
+        {
+          icon: Icon.external("h-4 w-4 text-amber-200"),
+          label: "Runtime externals",
+          value: summary.runtimeExternalCount ?? 0,
+          helper: `${summary.typeExternalCount ?? 0} type · ${summary.toolingExternalCount ?? 0} tooling`,
+        },
+        {
+          icon: Icon.tool("h-4 w-4 text-purple-200"),
+          label: "Tooling surface",
+          value: summary.toolingDependencyCount ?? 0,
+          helper: `Avg ${summary.averageToolingDeps ?? 0} configs/scripts`,
+        },
+      ];
+
+      const metaItems = [
+        { label: "Root directory", value: meta.rootDir || "—" },
+        { label: "Generated", value: meta.generatedAt || "—" },
+        { label: "Node runtime", value: meta.nodeVersion || "—" },
+        { label: "System", value: meta.systemInfo || "local" },
+      ];
+
+      return html`
+        <section class="space-y-6 rounded-xl border border-stone-900/70 bg-stone-950/80 p-6">
+          <header class="space-y-1">
+            <p class="text-xs font-semibold uppercase tracking-wide text-stone-500">Atlas snapshot</p>
+            <p class="text-sm text-stone-400">
+              ${meta.rootDir || "—"} · Generated ${meta.generatedAt || "—"} · Node ${meta.nodeVersion || "—"}
+            </p>
+          </header>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            ${statCards.map(
+              (card, index) => html`<article
+                key=${index}
+                class="rounded-xl border border-stone-900/70 bg-stone-950/65 p-4 shadow-[0_18px_30px_-32px_rgba(0,0,0,0.8)]"
+              >
+                <div class="flex items-center justify-between gap-3">
+                  <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-stone-900/60">${card.icon}</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-wide text-stone-500">${card.label}</span>
+                </div>
+                <p class="mt-4 text-2xl font-semibold text-stone-100">${card.value}</p>
+                <p class="mt-1 text-xs text-stone-400">${card.helper}</p>
+              </article>`,
+            )}
+          </div>
+          <dl class="grid gap-3 sm:grid-cols-2">
+            ${metaItems.map(
+              ({ label, value }) => html`<div class="rounded-lg border border-stone-900/70 bg-stone-950/65 p-3 text-xs">
+                <dt class="font-semibold uppercase tracking-wide text-stone-500">${label}</dt>
+                <dd class="mt-1 truncate text-stone-200" title=${value}>${value}</dd>
+              </div>`,
+            )}
+          </dl>
+        </section>
+      `;
+    };
 
     const filterOptions = [
       {
         id: "all",
         label: "All packages",
-        accent: "bg-zinc-800/80 text-zinc-200",
-        accentActive: "bg-zinc-200/15 text-zinc-100",
+        icon: Icon.package,
       },
       {
         id: "issues",
         label: "Needs attention",
-        accent: "bg-rose-500/15 text-rose-200",
-        accentActive: "bg-rose-500/25 text-rose-100",
+        icon: Icon.alert,
+      },
+      {
+        id: "critical",
+        label: "High risk",
+        icon: Icon.severityHigh,
       },
       {
         id: "tooling",
         label: "Has tooling",
-        accent: "bg-sky-500/15 text-sky-200",
-        accentActive: "bg-sky-500/25 text-sky-100",
+        icon: Icon.tool,
       },
     ];
 
     const FilterBar = ({ filter, setFilter, search, setSearch, counts }) => html`
-      <div class="flex flex-col gap-4 rounded-xl border border-zinc-800/70 bg-[#0f0f13]/90 p-3 sm:p-4">
-        <div class="grid gap-3 sm:grid-cols-3">
-          ${filterOptions.map(({ id, label, accent, accentActive }) => {
+      <div class="flex flex-col gap-4 rounded-lg border border-stone-900/70 bg-stone-950/80 p-4 sm:p-5">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          ${filterOptions.map(({ id, label, icon }) => {
             const isActive = filter === id;
             return html`
               <button
                 key=${id}
                 type="button"
                 class=${cx(
-                  "flex w-full flex-col items-start gap-1 rounded-2xl border px-4 py-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-400/60",
+                  "flex w-full items-center gap-3 rounded-md border px-4 py-3 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-400/70",
                   isActive
-                    ? "border-zinc-200/60 bg-gradient-to-br from-[#1c1c24] via-[#181821] to-[#1f1f2a] text-zinc-50 shadow-[0_16px_32px_-24px_rgba(0,0,0,0.85)]"
-                    : "border-zinc-800/80 bg-[#14141c] text-zinc-300 hover:border-zinc-600 hover:bg-[#1b1b24] hover:text-zinc-100"
+                    ? "border-stone-500/80 bg-stone-900/70 text-stone-100 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)]"
+                    : "border-stone-900 text-stone-400 hover:border-stone-600 hover:text-stone-100",
                 )}
                 onClick=${() => setFilter(id)}
               >
-                <span class=${cx(
-                  "inline-flex items-center gap-2 rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide leading-tight",
-                  isActive ? accentActive : accent
-                )}>${label}</span>
-                <span class="text-lg font-semibold text-zinc-100">${counts[id] ?? 0}</span>
-                <span class="text-xs text-zinc-500">${id === "all" ? "Total packages" : id === "issues" ? "Missing deps or unused externals" : "Configs or scripts detected"}</span>
+                <span class="flex h-9 w-9 items-center justify-center rounded-md bg-stone-900/60 text-stone-200">
+                  ${icon("h-4 w-4")}
+                </span>
+                <span class="flex flex-col">
+                  <span class="text-sm font-semibold">${label}</span>
+                  <span class="text-[11px] text-stone-500">${counts[id] ?? 0} matches</span>
+                </span>
               </button>`;
           })}
         </div>
-        <label class="flex w-full items-center gap-3 rounded-full border border-zinc-800 bg-[#111116] px-4 py-2 text-xs text-zinc-400">
-          <span class="text-zinc-500">🔍</span>
+        <label class="flex w-full items-center gap-3 rounded-full border border-stone-900/70 bg-stone-950/70 px-4 py-2 text-xs text-stone-400 focus-within:border-stone-600">
+          <span>${Icon.search("h-4 w-4 text-stone-500")}</span>
           <input
-            class="flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
+            class="flex-1 bg-transparent text-sm text-stone-200 placeholder:text-stone-500 outline-none"
             placeholder="Search packages"
             value=${search}
             onInput=${(event) => setSearch(event.currentTarget.value)}
           />
           ${search
-            ? html`<button type="button" class="text-zinc-500 hover:text-zinc-200" onClick=${() => setSearch("")}>✕</button>`
+            ? html`<button
+                type="button"
+                class="text-stone-500 transition hover:text-stone-200"
+                onClick=${() => setSearch("")}
+                aria-label="Clear search"
+              >
+                ${Icon.x("h-4 w-4")}
+              </button>`
             : null}
         </label>
       </div>
     `;
 
-    const severityDotByLevel = {
-      critical: "bg-rose-400",
-      watch: "bg-blue-400",
-      stable: "bg-zinc-500",
+    const CycleInsights = ({ summary, insights }) => {
+      const edges = Array.isArray(insights?.edges) ? insights.edges : [];
+      const edgeCount = insights?.edgeCount ?? 0;
+      const packageCount = insights?.packageCount ?? 0;
+
+      if (!edges.length) {
+        return html`
+          <section class="rounded-lg border border-stone-900/70 bg-stone-950/80 p-6 shadow-[0_12px_40px_-32px_rgba(0,0,0,0.7)]">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h3 class="text-lg font-semibold text-stone-100">Circular dependency insights</h3>
+                <p class="text-sm text-stone-400">No circular dependencies detected in this snapshot.</p>
+              </div>
+              <span class="inline-flex items-center gap-2 rounded-full border border-emerald-500/40 bg-emerald-900/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-emerald-200">
+                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-900/40">
+                  ${Icon.check("h-3.5 w-3.5")}
+                </span>
+                Clean graph
+              </span>
+            </div>
+          </section>
+        `;
+      }
+
+      const severityMeta = {
+        high: {
+          tone: "border border-rose-600/40 bg-rose-950/30 text-rose-200",
+          badge: "border-rose-500/50 bg-rose-900/40 text-rose-200",
+          icon: Icon.severityHigh,
+          label: "High impact",
+        },
+        medium: {
+          tone: "border border-amber-500/35 bg-amber-950/30 text-amber-200",
+          badge: "border-amber-500/45 bg-amber-900/35 text-amber-200",
+          icon: Icon.severityMedium,
+          label: "Moderate",
+        },
+        low: {
+          tone: "border border-sky-500/35 bg-sky-950/30 text-sky-200",
+          badge: "border-sky-500/45 bg-sky-900/35 text-sky-200",
+          icon: Icon.severityLow,
+          label: "Low",
+        },
+      };
+
+      const topEdges = edges.slice(0, 6);
+      const remaining = edges.length - topEdges.length;
+
+      return html`
+        <section class="space-y-5 rounded-lg border border-stone-900/70 bg-stone-950/80 p-6 shadow-[0_12px_40px_-32px_rgba(0,0,0,0.7)]">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div class="space-y-1">
+              <h3 class="text-lg font-semibold text-stone-100">Circular dependency insights</h3>
+              <p class="text-sm text-stone-400">
+                Investigate the packages participating in cycles and plan remediation.
+              </p>
+            </div>
+            <div class="grid gap-2 text-right text-xs text-stone-400 sm:grid-cols-3">
+              <div class="rounded-md border border-stone-900/70 bg-stone-950/70 px-3 py-2 font-mono uppercase tracking-[0.24em] text-stone-300">
+                ${edgeCount}<span class="ml-2 text-[11px] text-stone-500 normal-case tracking-normal">pairs</span>
+              </div>
+              <div class="rounded-md border border-stone-900/70 bg-stone-950/70 px-3 py-2 font-mono uppercase tracking-[0.24em] text-stone-300">
+                ${packageCount}<span class="ml-2 text-[11px] text-stone-500 normal-case tracking-normal">packages</span>
+              </div>
+              <div class="rounded-md border border-stone-900/70 bg-stone-950/70 px-3 py-2 font-mono uppercase tracking-[0.24em] text-stone-300">
+                ${summary.cyclicDependencyCount ?? 0}<span class="ml-2 text-[11px] text-stone-500 normal-case tracking-normal">edges</span>
+              </div>
+            </div>
+          </div>
+          <div class="grid gap-4 md:grid-cols-2">
+            ${topEdges.map((edge, index) => {
+              const meta = severityMeta[edge.severity] ?? severityMeta.medium;
+              return html`
+                <article
+                  key=${index}
+                  class=${cx("space-y-3 rounded-lg px-4 py-4 transition-shadow hover:shadow-[0_18px_30px_-28px_rgba(0,0,0,0.8)]", meta.tone)}
+                >
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div class="space-y-1">
+                      <div class="flex flex-wrap items-center gap-2 text-sm font-semibold">
+                        <a href=${`#${edge.fromAnchor}`} class="underline-offset-4 transition hover:underline">
+                          ${edge.fromName}
+                        </a>
+                      <span class="flex h-6 w-6 items-center justify-center rounded-full bg-stone-900/40 text-stone-300">
+                          ${Icon.link("h-3 w-3")}
+                        </span>
+                        <a href=${`#${edge.toAnchor}`} class="underline-offset-4 transition hover:underline">
+                          ${edge.toName}
+                        </a>
+                      </div>
+                      <p class="text-xs text-stone-300">
+                        ${edge.referenceFileCount} referenced files · ${edge.edgeCount} edges observed
+                      </p>
+                    </div>
+                      <span
+                        class=${cx(
+                          "inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide",
+                          meta.badge,
+                        )}
+                        title=${meta.label}
+                    >
+                      <span class="flex h-6 w-6 items-center justify-center rounded-full bg-black/20">
+                        ${meta.icon("h-3.5 w-3.5")}
+                      </span>
+                      ${meta.label}
+                    </span>
+                  </div>
+                  ${edge.sampleFiles?.length
+                    ? html`<div class="space-y-1.5">
+                        <p class="text-[11px] font-semibold uppercase tracking-wide text-stone-300">
+                          Sample paths
+                        </p>
+                        <ul class="space-y-1 text-[11px] text-stone-300">
+                          ${edge.sampleFiles.map(
+                            (entry, fileIndex) => html`<li
+                              key=${fileIndex}
+                              class="flex flex-wrap items-center gap-2 rounded border border-stone-800/70 bg-stone-950/60 px-2 py-1"
+                            >
+                              <a
+                                class="font-medium text-stone-200 underline-offset-4 transition hover:underline"
+                                href=${`#${entry.ownerAnchor}`}
+                              >
+                                ${entry.ownerName}
+                              </a>
+                              <span class="text-stone-500">·</span>
+                              <code class="truncate font-mono text-stone-400">${entry.file}</code>
+                            </li>`,
+                          )}
+                        </ul>
+                      </div>`
+                    : null}
+                </article>
+              `;
+            })}
+          </div>
+          ${remaining > 0
+            ? html`<p class="text-xs text-stone-500">
+                +${remaining} additional cycle pair${remaining === 1 ? "" : "s"} recorded in this snapshot.
+              </p>`
+            : null}
+        </section>
+      `;
     };
 
     const DependencyDrilldown = ({ items, defaultExpanded = false }) => {
@@ -341,56 +1026,69 @@
         }
       };
 
+      const totalFiles = items.reduce((acc, item) => acc + item.fileCount, 0);
+
       return html`
-        <details class="group mt-4 rounded-2xl border border-zinc-800/70 bg-[#0f0f13]/80 p-4" open=${defaultExpanded}>
-          <summary class="flex cursor-pointer items-center justify-between text-xs font-semibold uppercase tracking-wide text-zinc-400">
+        <details
+          class="group mt-4 rounded-lg border border-stone-900/70 bg-stone-950/70 p-4"
+          open=${defaultExpanded}
+        >
+          <summary class="flex cursor-pointer items-center justify-between text-xs font-semibold uppercase tracking-wide text-stone-300">
             <span class="flex items-center gap-2">
-              <span class="text-zinc-300">📂</span>
+              <span class="flex h-7 w-7 items-center justify-center rounded-md bg-stone-900/60 text-stone-300">
+                ${Icon.folder("h-4 w-4")}
+              </span>
               Dependency file map
             </span>
-            <span class="text-[11px] text-zinc-500">${items.reduce((acc, item) => acc + item.fileCount, 0)} paths</span>
+            <span class="text-[11px] text-stone-500">${totalFiles} file${totalFiles === 1 ? "" : "s"}</span>
           </summary>
           <div class="mt-4 space-y-4">
             ${items.map(
               (item) => html`
-                <div key=${item.name} class="space-y-2 rounded-2xl border border-zinc-800 bg-[#111116] p-3">
+                <div key=${item.name} class="space-y-2 rounded-md border border-stone-900/70 bg-stone-950/60 p-3">
                   <div class="flex items-center justify-between gap-3">
-                    <span class="font-mono text-xs text-zinc-200">${item.name}</span>
-                    <span class="text-[11px] text-zinc-500">${item.fileCount} file${item.fileCount === 1 ? "" : "s"}</span>
+                    <span class="font-mono text-xs text-stone-300">${item.name}</span>
+                    <span class="text-[11px] text-stone-500">${item.fileCount} file${item.fileCount === 1 ? "" : "s"}</span>
                   </div>
                   <div class="space-y-1.5">
                     ${item.files.map(
                       (file) => html`
-                        <div key=${file} class="flex flex-wrap items-center gap-2 rounded-sm bg-[#0f0f13] px-2 py-1">
-                          <code class="flex-1 truncate font-mono text-[11px] text-zinc-300" title=${file}>${file}</code>
+                        <div
+                          key=${file}
+                          class="flex flex-wrap items-center gap-2 rounded border border-stone-900/60 bg-stone-950/70 px-2 py-1"
+                        >
+                          <code class="flex-1 truncate font-mono text-[11px] text-stone-300" title=${file}>${file}</code>
                           <div class="flex items-center gap-1.5">
                             ${(() => {
                               const links = resolveEditorLinks(file);
                               if (!links) return null;
                               return html`
                                 <a
-                                  class="inline-flex items-center gap-1 rounded border border-zinc-700/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-300 transition hover:border-zinc-500 hover:text-zinc-100"
+                                  class="inline-flex items-center gap-1 rounded border border-stone-900/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-stone-300 transition hover:border-stone-700 hover:text-stone-100"
                                   href=${links.vscode}
                                   target="_blank"
                                   rel="noreferrer"
                                 >
+                                  ${Icon.link("h-3.5 w-3.5")}
                                   VS Code
                                 </a>
                                 <a
-                                  class="inline-flex items-center gap-1 rounded border border-zinc-700/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-300 transition hover:border-zinc-500 hover:text-zinc-100"
+                                  class="inline-flex items-center gap-1 rounded border border-stone-900/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-stone-300 transition hover:border-stone-700 hover:text-stone-100"
                                   href=${links.zed}
                                   target="_blank"
                                   rel="noreferrer"
                                 >
+                                  ${Icon.link("h-3.5 w-3.5")}
                                   Zed
                                 </a>
                               `;
                             })()}
                             <button
                               type="button"
-                              class="shrink-0 rounded border border-zinc-700/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-400 transition hover:border-zinc-500 hover:text-zinc-100"
+                              class="inline-flex items-center gap-1 rounded border border-stone-900/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-stone-300 transition hover:border-stone-700 hover:text-stone-100"
                               onClick=${() => handleCopy(file)}
                             >
+                              ${copiedPath === file ? Icon.check("h-3 w-3") : Icon.copy("h-3 w-3")}
                               ${copiedPath === file ? "Copied" : "Copy"}
                             </button>
                           </div>
@@ -406,153 +1104,189 @@
       `;
     };
 
+    const severityStyles = {
+      critical: {
+        badge: "border-rose-600/50 bg-rose-950/35 text-rose-200",
+        chip: "border-rose-600/45 bg-rose-950/25 text-rose-200",
+        icon: Icon.severityHigh,
+      },
+      watch: {
+        badge: "border-amber-500/45 bg-amber-950/30 text-amber-200",
+        chip: "border-amber-500/40 bg-amber-950/25 text-amber-200",
+        icon: Icon.severityMedium,
+      },
+      stable: {
+        badge: "border-emerald-500/45 bg-emerald-950/30 text-emerald-200",
+        chip: "border-emerald-500/40 bg-emerald-950/25 text-emerald-200",
+        icon: Icon.severityLow,
+      },
+    };
+
     const DependencyBadge = ({ dep }) => {
-      const tones = dep.isUndeclared
-        ? "bg-[#131318] text-zinc-200 hover:bg-[#18181d]"
+      const isDevOnly = Boolean(dep.isDevOnly);
+      const tone = dep.isUndeclared
+        ? "border-amber-500/45 bg-amber-950/30 text-amber-200 hover:border-amber-400/60"
         : dep.isCyclic
-          ? "bg-[#131318] text-zinc-200 hover:bg-[#18181d]"
-          : "bg-[#111116] text-zinc-300 hover:bg-[#15151a]";
-      const accents = [];
-      if (dep.isCyclic) accents.push("bg-red-500");
-      if (dep.isUndeclared) accents.push("bg-orange-500");
+          ? "border-rose-600/45 bg-rose-950/35 text-rose-200 hover:border-rose-500/60"
+          : isDevOnly
+            ? "border-sky-500/45 bg-sky-950/30 text-sky-200 hover:border-sky-400/60"
+            : "border-stone-900/70 bg-stone-950/60 text-stone-200 hover:border-stone-700";
+      const glyphs = [isDevOnly ? Icon.dev("h-3 w-3") : Icon.package("h-3 w-3")];
+      if (dep.isCyclic) glyphs.push(Icon.cycle("h-3 w-3"));
+      if (dep.isUndeclared) glyphs.push(Icon.alert("h-3 w-3"));
       return html`
-        <a href=${`#${dep.anchor}`}
-          class=${`inline-flex items-center gap-2 rounded-sm px-3 py-1 text-xs font-medium transition-colors ${tones}`}>
-          ${accents.length
-            ? html`<span class="flex items-center gap-1">${accents.map((accent, index) => html`<span key=${index} class="h-2 w-2 rounded-sm ${accent}"></span>`)}</span>`
-            : null}
+        <a
+          href=${`#${dep.anchor}`}
+          class=${`inline-flex items-center gap-2 rounded-md border px-3 py-1 text-xs font-medium transition ${tone}`}
+        >
+          <span class="flex items-center gap-1 text-current">
+            ${glyphs.map(
+              (icon, index) =>
+                html`<span key=${index} class="inline-flex items-center justify-center">${icon}</span>`,
+            )}
+          </span>
           <span class="font-mono text-[11px]">${dep.name}</span>
-        </a>`;
+        </a>
+      `;
     };
 
     const ExternalBadge = ({ dep }) => {
       const tone = !dep.isDeclared
-        ? "bg-orange-500/20 text-orange-100 hover:bg-orange-500/30"
+        ? "border-amber-500/45 bg-amber-950/30 text-amber-200 hover:border-amber-400/60"
+        : dep.isToolingOnly || dep.isDevOnly
+          ? "border-sky-500/45 bg-sky-950/30 text-sky-200 hover:border-sky-400/60"
+        : dep.isTypeOnly
+          ? "border-purple-500/45 bg-purple-950/30 text-purple-200 hover:border-purple-400/60"
         : dep.isUsed
-          ? dep.isToolingOnly
-            ? "bg-blue-500/15 text-blue-100 hover:bg-blue-500/25"
-            : "bg-emerald-500/15 text-emerald-200 hover:bg-emerald-500/25"
-          : dep.isTypeOnly
-            ? "bg-purple-500/15 text-purple-100 hover:bg-purple-500/25"
-            : "bg-[#111116] text-zinc-300 hover:bg-[#15151a]";
+          ? "border-emerald-500/45 bg-emerald-950/30 text-emerald-200 hover:border-emerald-400/60"
+          : "border-stone-900/70 bg-stone-950/60 text-stone-200 hover:border-stone-700";
+      const glyphs = [];
+      if (!dep.isDeclared) glyphs.push(Icon.alert("h-3 w-3"));
+      if (dep.isToolingOnly) {
+        glyphs.push(Icon.tool("h-3 w-3"));
+      } else if (dep.isTypeOnly) {
+        glyphs.push(Icon.type("h-3 w-3"));
+      } else {
+        glyphs.push(Icon.external("h-3 w-3"));
+      }
+      if (dep.isDevOnly) glyphs.push(Icon.dev("h-3 w-3"));
       return html`
-        <span class=${`inline-flex flex-wrap items-center gap-2 rounded-sm px-3 py-1 text-xs font-medium transition-colors ${tone}`}>
+        <span
+          class=${`inline-flex flex-wrap items-center gap-2 rounded-md border px-3 py-1 text-xs font-medium transition ${tone}`}
+        >
+          <span class="flex items-center gap-1 text-current">
+            ${glyphs.map(
+              (icon, index) =>
+                html`<span key=${index} class="inline-flex items-center justify-center">${icon}</span>`,
+            )}
+          </span>
           <span class="font-mono text-[11px]">${dep.name}</span>
-          <span class="rounded-sm bg-[#0c0c10] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-200/90">${dep.statusLabel}</span>
-          ${dep.scopeLabel
-            ? html`<span
-                class=${cx(
-                  "rounded-sm px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
-                  dep.scopeToneClass || "bg-zinc-700/60 text-zinc-100",
-                )}
-              >
-                ${dep.scopeLabel}
-              </span>`
-            : null}
-          ${dep.isTypeOnly
-            ? html`<span class="rounded-sm bg-purple-500/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-purple-50">Type</span>`
-            : null}
-          ${dep.isToolingOnly
-            ? html`<span class="rounded-sm bg-blue-500/25 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-blue-50">Tool</span>`
-            : null}
           ${dep.isUsed && dep.usageCount > 0
-          ? html`<span class="text-[10px] text-zinc-400">x${dep.usageCount}</span>`
+            ? html`<span class="text-[10px] text-stone-300">x${dep.usageCount}</span>`
             : null}
-        </span>`;
+        </span>
+      `;
     };
 
-    const PackageCard = ({ pkg }) => html`
-      <article
-        id=${pkg.anchorId}
-        class="group relative rounded-2xl border border-zinc-800/70 bg-[#0f0f13]/90 p-6 shadow-sm shadow-black/40 transition">
-        <header class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-          <div class="space-y-1">
-            <h3 class="flex flex-wrap items-center gap-2 text-xl font-semibold text-zinc-100">
-              <span class="text-zinc-300">📦</span>
-              <span>${pkg.displayName}</span>
-              ${pkg.isRoot
-                ? html`<span class="rounded-sm bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-300">Root</span>`
+
+    const PackageCard = ({ pkg }) => {
+      const severityStyle = severityStyles[pkg.severityLevel] ?? severityStyles.stable;
+      return html`
+        <article
+          id=${pkg.anchorId}
+          class="group relative rounded-lg border border-stone-900/70 bg-stone-950/75 p-6 shadow-[0_20px_40px_-32px_rgba(0,0,0,0.8)] transition hover:border-stone-700"
+        >
+          <header class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+            <div class="space-y-2">
+              <h3 class="flex flex-wrap items-center gap-3 text-xl font-semibold text-stone-100">
+                <span class="flex h-9 w-9 items-center justify-center rounded-md bg-stone-900/60 text-stone-200">
+                  ${Icon.package("h-4.5 w-4.5")}
+                </span>
+                <span>${pkg.displayName}</span>
+                ${pkg.isRoot
+                  ? html`<span class="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-950/30 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-200">
+                      ${Icon.check("h-3 w-3")}
+                      Root
+                    </span>`
+                  : null}
+                ${pkg.version
+                  ? html`<span class="rounded-full border border-stone-800/70 bg-stone-950/60 px-3 py-0.5 text-xs font-medium text-stone-300">
+                      v${pkg.version}
+                    </span>`
+                  : null}
+              </h3>
+              ${pkg.description?.trim()
+                ? html`<p class="text-[11px] leading-relaxed text-stone-300">
+                    ${pkg.description}
+                  </p>`
+                : html`<p class="text-[11px] italic text-stone-500">
+                    No description provided in package.json.
+                  </p>`}
+              ${pkg.relativeDir ? html`<p class="font-mono text-xs text-stone-500">${pkg.relativeDir}</p>` : null}
+              ${pkg.severitySignals.length
+                ? html`<div class="mt-2 flex flex-wrap gap-2">
+                    ${pkg.severitySignals.map(
+                      (signal, index) => html`<span
+                        key=${index}
+                        class="rounded-full border border-stone-800/70 bg-stone-950/60 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-stone-300"
+                      >
+                        ${signal}
+                      </span>`,
+                    )}
+                  </div>`
                 : null}
-              ${pkg.version
-                ? html`<span class="rounded-sm bg-[#111116] px-3 py-0.5 text-xs font-medium text-zinc-300">v${pkg.version}</span>`
-                : null}
-            </h3>
-            ${pkg.description?.trim()
-              ? html`<p class="max-w-[32ch] text-[11px] text-zinc-400/90 line-clamp-2">${pkg.description}</p>`
-              : html`<p class="max-w-[32ch] text-[11px] italic text-zinc-500/70">No description provided in package.json</p>`}
-            ${pkg.relativeDir
-              ? html`<p class="font-mono text-xs text-zinc-500">${pkg.relativeDir}</p>`
-              : null}
-            ${pkg.severitySignals.length
-              ? html`<div class="mt-2 flex flex-wrap gap-2">
-                  ${pkg.severitySignals.map(
-                    (signal, index) => html`<span
-                      key=${index}
-                      class="rounded-full bg-[#0f0f13] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-zinc-400"
-                    >
-                      ${signal}
-                    </span>`,
-                  )}
-                </div>`
-              : null}
-          </div>
-          <div class="flex flex-wrap items-start justify-end gap-2">
+            </div>
             <span
               class=${cx(
-                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase leading-tight tracking-wide shadow-[0_1px_2px_rgba(0,0,0,0.45)]",
-                pkg.severityToneClass,
+                "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide shadow-[0_1px_2px_rgba(0,0,0,0.45)]",
+                severityStyle.badge,
               )}
             >
-              <span class=${`h-2 w-2 rounded-full ${severityDotByLevel[pkg.severityLevel] ?? "bg-zinc-500"}`}></span>
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-black/20">
+                ${severityStyle.icon("h-3.5 w-3.5")}
+              </span>
               ${pkg.severityLabel}
             </span>
-            <dl class="grid grid-cols-2 gap-3 text-xs text-zinc-400 sm:text-sm md:text-right">
-              <div>
-                <dt class="uppercase tracking-wide text-zinc-500">Files</dt>
-                <dd class="font-semibold text-zinc-200">${pkg.fileCount ?? 0}</dd>
-              </div>
-              <div>
-                <dt class="uppercase tracking-wide text-zinc-500">Dependencies</dt>
-                <dd class="font-semibold text-zinc-200">${pkg.dependencies.length}</dd>
-              </div>
-              <div>
-                <dt class="uppercase tracking-wide text-zinc-500">References</dt>
-                <dd class="font-semibold text-zinc-200">${pkg.references}</dd>
-              </div>
-              <div>
-                <dt class="uppercase tracking-wide text-zinc-500">External</dt>
-                <dd class="font-semibold text-zinc-200">${pkg.runtimeExternalCount}</dd>
-              </div>
-            </dl>
-          </div>
-        </header>
-        <section class="mt-4">
-          <h4 class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Dependencies</h4>
-          <div class="mt-2 flex flex-wrap gap-2.5">
-            ${pkg.dependencyBadges.length
-              ? pkg.dependencyBadges.map((dep, index) => html`<${DependencyBadge} key=${index} dep=${dep} />`)
-              : html`<span class="rounded-sm bg-[#0f0f13] px-3 py-1 text-xs font-medium text-zinc-400">No internal dependencies</span>`}
-          </div>
-        </section>
-        <section class="mt-4">
-          <h4 class="text-xs font-semibold uppercase tracking-wide text-zinc-500">External Dependencies</h4>
-          <div class="mt-2 flex flex-wrap gap-2.5">
-            ${pkg.externalDependencyBadges.length
-              ? pkg.externalDependencyBadges.map((dep, index) => html`<${ExternalBadge} key=${index} dep=${dep} />`)
-              : html`<span class="rounded-sm bg-[#0f0f13] px-3 py-1 text-xs font-medium text-zinc-400">No external dependencies</span>`}
-          </div>
-        </section>
-        <${DependencyDrilldown} items=${pkg.dependencyDrilldown} />
-        ${pkg.toolingDepsList.length
-          ? html`<section class="mt-4">
-              <h4 class="text-xs font-semibold uppercase tracking-wide text-zinc-500">Tooling detected</h4>
-              <div class="mt-2 flex flex-wrap gap-2.5">
-                ${pkg.toolingDepsList.map((tool, index) => html`<span key=${index} class="rounded-sm bg-blue-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-100">${tool}</span>`)}
-              </div>
-            </section>`
-          : null}
-      </article>
-    `;
+          </header>
+          <section class="mt-4">
+            <h4 class="text-xs font-semibold uppercase tracking-wide text-stone-500">Internal dependencies</h4>
+            <div class="mt-2 flex flex-wrap gap-2">
+              ${pkg.dependencyBadges.length
+                ? pkg.dependencyBadges.map((dep, index) => html`<${DependencyBadge} key=${index} dep=${dep} />`)
+                : html`<span class="rounded-md border border-stone-900/70 bg-stone-950/60 px-3 py-1 text-xs font-medium text-stone-400">
+                    No internal dependencies
+                  </span>`}
+            </div>
+          </section>
+          <section class="mt-4">
+            <h4 class="text-xs font-semibold uppercase tracking-wide text-stone-500">External dependencies</h4>
+            <div class="mt-2 flex flex-wrap gap-2.5">
+              ${pkg.externalDependencyBadges.length
+                ? pkg.externalDependencyBadges.map((dep, index) => html`<${ExternalBadge} key=${index} dep=${dep} />`)
+                : html`<span class="rounded-md border border-stone-900/70 bg-stone-950/60 px-3 py-1 text-xs font-medium text-stone-400">
+                    No external dependencies
+                  </span>`}
+            </div>
+          </section>
+          <${DependencyDrilldown} items=${pkg.dependencyDrilldown} />
+          ${pkg.toolingDepsList.length
+            ? html`<section class="mt-4">
+                <h4 class="text-xs font-semibold uppercase tracking-wide text-stone-500">Tooling detected</h4>
+                <div class="mt-2 flex flex-wrap gap-2.5">
+                  ${pkg.toolingDepsList.map(
+                    (tool, index) => html`<span
+                      key=${index}
+                      class="rounded-full border border-stone-900/70 bg-stone-950/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-stone-300"
+                    >
+                      ${tool}
+                    </span>`,
+                  )}
+                </div>
+              </section>`
+            : null}
+        </article>
+      `;
+    };
 
     const PackageList = ({ packages }) => html`
       <div class="grid gap-5">
@@ -560,214 +1294,79 @@
       </div>
     `;
 
-    const BlocksView = ({ packages }) => {
-      const [hovered, setHovered] = useState(null);
-      const [selected, setSelected] = useState(null);
-      const dependentsByName = useMemo(() => {
-        const map = new Map();
-        packages.forEach((pkg) => {
-          (pkg.dependencyBadges || []).forEach((dep) => {
-            if (!map.has(dep.name)) map.set(dep.name, new Set());
-            map.get(dep.name).add(pkg.anchorId);
-          });
-        });
-        return map;
-      }, [packages]);
-
-      const focusKey = selected ?? hovered;
-      const focusPackage = focusKey ? packages.find((pkg) => pkg.name === focusKey) : null;
-
-      const activeDependents = focusKey ? dependentsByName.get(focusKey) || new Set() : new Set();
-
-      const handleToggleSelect = (pkgName) => {
-        setSelected((current) => (current === pkgName ? null : pkgName));
-      };
-
-      const handleKeyToggle = (event, pkgName) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          handleToggleSelect(pkgName);
-        }
-      };
-
-      return html`
-        <section class="rounded-2xl border border-zinc-800/70 bg-[#0f0f13]/90 p-5 shadow-sm shadow-black/40">
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
-            <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-400">Dependency Blocks</h2>
-            <p class="text-xs text-zinc-500">Hover to preview dependents or click to lock a selection. Click again to clear.</p>
-          </div>
-          <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            ${packages.map((pkg) => {
-              const dependentsCount = dependentsByName.get(pkg.name)?.size ?? 0;
-              const isSelected = selected === pkg.name;
-              const isHovered = !isSelected && hovered === pkg.name;
-              const isDependent = Boolean(focusKey) && activeDependents.has(pkg.anchorId);
-              const severityDot = severityDotByLevel[pkg.severityLevel] ?? "bg-zinc-500";
-              const baseClass = "block-card relative flex min-h-[88px] flex-col justify-between gap-4 rounded-2xl border border-zinc-800/70 bg-[#111116] px-4 py-3 shadow-sm shadow-black/30 transition duration-150 sm:min-h-[96px] sm:px-5 sm:py-4";
-              const highlightClass = isSelected
-                ? "ring-2 ring-zinc-400/70 bg-[#151519]"
-                : isDependent
-                  ? "ring-2 ring-rose-400/70 bg-[#161216]"
-                  : isHovered
-                    ? "ring-1 ring-zinc-700/60 bg-[#151519]"
-                    : "hover:-translate-y-0.5 hover:bg-[#151519]";
-              return html`
-                <article
-                  key=${pkg.anchorId}
-                  class=${`${baseClass} ${highlightClass}`}
-                  tabindex="0"
-                  onMouseEnter=${() => setHovered(pkg.name)}
-                  onFocus=${() => setHovered(pkg.name)}
-                  onMouseLeave=${() => setHovered(null)}
-                  onBlur=${() => setHovered(null)}
-                  onClick=${() => handleToggleSelect(pkg.name)}
-                  onKeyDown=${(event) => handleKeyToggle(event, pkg.name)}
-                >
-                  <div class="flex items-start justify-between gap-2">
-                    <h3 class="line-clamp-2 text-sm font-medium leading-tight text-zinc-100">${pkg.displayName}</h3>
-                    ${pkg.isRoot
-                      ? html`<span class="shrink-0 rounded-sm bg-emerald-500/20 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-emerald-300">Root</span>`
-                      : null}
-                  </div>
-                  <div class="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
-                    <span class=${cx(
-                      "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase leading-tight tracking-wide shadow-[0_1px_2px_rgba(0,0,0,0.45)]",
-                      pkg.severityToneClass,
-                    )}>
-                      <span class=${`h-2 w-2 rounded-full ${severityDot}`}></span>
-                      ${pkg.severityLabel}
-                    </span>
-                    ${pkg.undeclaredDeps.length
-                      ? html`<span class="inline-flex h-2 w-2 rounded-full bg-orange-500"></span>`
-                      : null}
-                    ${pkg.cyclicCount > 0
-                      ? html`<span class="inline-flex h-2 w-2 rounded-full bg-red-500"></span>`
-                      : null}
-                    ${dependentsCount
-                      ? html`<span class="rounded-sm bg-[#0f0f13] px-2 py-0.5 text-[10px] font-semibold text-zinc-300">${dependentsCount}</span>`
-                      : null}
-                  </div>
-                  <div class="flex flex-wrap items-center gap-2 text-[11px] text-zinc-400">
-                    <span class="rounded-sm bg-[#0f0f13] px-2 py-0.5 font-mono text-[10px] text-zinc-300">
-                      ${pkg.dependencies.length} deps
-                    </span>
-                    <span class="rounded-sm bg-[#0f0f13] px-2 py-0.5 font-mono text-[10px] text-zinc-300">
-                      ${dependentsCount} dependents
-                    </span>
-                    ${pkg.externalDependencyBadges.length
-                      ? html`<span class="rounded-sm bg-blue-500/15 px-2 py-0.5 font-mono text-[10px] text-blue-100">
-                          ${pkg.externalDependencyBadges.length} external
-                        </span>`
-                      : null}
-                    ${pkg.undeclaredDeps.length
-                      ? html`<span class="rounded-sm bg-orange-500/20 px-2 py-0.5 font-mono text-[10px] text-orange-100">
-                          ${pkg.undeclaredDeps.length} undeclared
-                        </span>`
-                      : null}
-                    ${pkg.cyclicCount > 0
-                      ? html`<span class="rounded-sm bg-red-500/20 px-2 py-0.5 font-mono text-[10px] text-red-100">
-                          ${pkg.cyclicCount} cyclic
-                        </span>`
-                      : null}
-                  </div>
-                </article>`;
-            })}
-          </div>
-          ${focusPackage
-            ? html`<div class="mt-6 rounded-2xl border border-zinc-800/70 bg-[#111116] p-5">
-                <div class="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
-                  <div>
-                    <p class="text-xs uppercase tracking-wide text-zinc-500">Selected package</p>
-                    <h3 class="text-lg font-semibold text-zinc-100">${focusPackage.displayName}</h3>
-                    ${focusPackage.relativeDir
-                      ? html`<p class="font-mono text-xs text-zinc-500">${focusPackage.relativeDir}</p>`
-                      : null}
-                    ${focusPackage.severitySignals.length
-                      ? html`<div class="mt-2 flex flex-wrap gap-2">
-                          ${focusPackage.severitySignals.map(
-                            (signal, index) => html`<span
-                              key=${index}
-                              class="rounded-full bg-[#0f0f13] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-zinc-400"
-                            >
-                              ${signal}
-                            </span>`,
-                          )}
-                        </div>`
-                      : null}
-                  </div>
-                  <button
-                    type="button"
-                    class="self-start rounded-full border border-zinc-800 px-3 py-1.5 text-xs font-medium text-zinc-300 transition hover:border-zinc-600 hover:text-zinc-100 sm:self-auto"
-                    onClick=${() => setSelected(null)}
-                  >
-                    Clear selection
-                  </button>
-                </div>
-                <div class="mt-4 grid gap-4 md:grid-cols-2">
-                  <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                      Internal dependencies (${focusPackage.dependencies.length})
-                    </h4>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                      ${focusPackage.dependencyBadges.length
-                        ? focusPackage.dependencyBadges.map((dep, index) =>
-                            html`<span
-                              key=${index}
-                              class="rounded-sm bg-[#0f0f13] px-3 py-1 text-xs font-medium text-zinc-200"
-                            >
-                              ${dep.name}
-                            </span>`,
-                          )
-                        : html`<span class="rounded-sm bg-[#0f0f13] px-3 py-1 text-xs text-zinc-400">
-                            No internal dependencies
-                          </span>`}
-                    </div>
-                  </div>
-                  <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wide text-zinc-500">
-                      External footprint (${focusPackage.externalDependencyBadges.length})
-                    </h4>
-                    <div class="mt-2 flex flex-wrap gap-2">
-                      ${focusPackage.externalDependencyBadges.length
-                        ? focusPackage.externalDependencyBadges.map((dep, index) =>
-                            html`<span
-                              key=${index}
-                              class="rounded-sm bg-blue-500/15 px-3 py-1 text-xs font-medium text-blue-100"
-                            >
-                              ${dep.name}
-                            </span>`,
-                          )
-                        : html`<span class="rounded-sm bg-[#0f0f13] px-3 py-1 text-xs text-zinc-400">
-                            No external dependencies
-                          </span>`}
-                    </div>
-                  </div>
-                </div>
-                <${DependencyDrilldown} items=${focusPackage.dependencyDrilldown} defaultExpanded=${false} />
-              </div>`
-            : null}
-        </section>
-      `;
-    };
-
-    const App = ({ data }) => {
-      const [view, setView] = useState("list");
+    const App = ({ data, status, liveMode }) => {
       const [filter, setFilter] = useState("all");
       const [search, setSearch] = useState("");
 
       const counts = useMemo(() => {
-        const base = { all: data.packages.length, issues: 0, tooling: 0 };
+        const base = { all: data.packages.length, issues: 0, tooling: 0, critical: 0 };
         data.packages.forEach((pkg) => {
           if (pkg.hasIssues) base.issues += 1;
+          if (pkg.severityLevel === "critical") base.critical += 1;
           if (pkg.toolingDepsList.length) base.tooling += 1;
         });
         return base;
       }, [data.packages]);
 
+      const performance = useMemo(() => derivePerformanceInsights(data.packages), [data.packages]);
+
+      useEffect(() => {
+        const metrics = {
+          packages: data.summary.packageCount ?? 0,
+          edges: data.summary.dependencyCount ?? 0,
+          externals: data.summary.runtimeExternalCount ?? 0,
+          generatedAt: data.meta.generatedAt || "—",
+          nodeVersion: data.meta.nodeVersion || "—",
+        };
+
+        document.querySelectorAll("[data-hero-metric]").forEach((node) => {
+          const key = node.getAttribute("data-hero-metric");
+          if (!key || metrics[key] === undefined) return;
+          node.textContent = String(metrics[key]);
+        });
+
+        const exportBtn = document.querySelector('[data-action="export-json"]');
+        const handleExport = () => {
+          let formatted = rawPayload;
+          try {
+            formatted = JSON.stringify(JSON.parse(rawPayload), null, 2);
+          } catch {
+            // Keep raw payload if parsing fails
+          }
+          const blob = new Blob([formatted], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = `retracify-atlas-${Date.now()}.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        };
+        exportBtn?.addEventListener("click", handleExport);
+
+        const scrollButtons = document.querySelectorAll('[data-scroll-to]');
+        const handleScroll = (event) => {
+          const target = event.currentTarget?.getAttribute?.("data-scroll-to");
+          if (!target) return;
+          const el = document.querySelector(target);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        };
+        scrollButtons.forEach((btn) => btn.addEventListener("click", handleScroll));
+
+        return () => {
+          exportBtn?.removeEventListener("click", handleExport);
+          scrollButtons.forEach((btn) => btn.removeEventListener("click", handleScroll));
+        };
+      }, [data.summary, data.meta]);
+
       const filteredPackages = useMemo(() => {
         const needle = search.trim().toLowerCase();
         return data.packages.filter((pkg) => {
           if (filter === "issues" && !pkg.hasIssues) return false;
+          if (filter === "critical" && pkg.severityLevel !== "critical") return false;
           if (filter === "tooling" && pkg.toolingDepsList.length === 0) return false;
           if (needle && !pkg.displayName.toLowerCase().includes(needle)) return false;
           return true;
@@ -775,31 +1374,96 @@
       }, [data.packages, filter, search]);
 
       return html`
-        <div class="space-y-6">
-          <${SummaryCards} summary=${data.summary} meta=${data.meta} />
-          <div class="grid gap-4 lg:grid-cols-[auto,1fr]">
-            <${ViewToggle} view=${view} onChange=${setView} />
-            <${FilterBar}
-              filter=${filter}
-              setFilter=${setFilter}
-              search=${search}
-              setSearch=${setSearch}
-              counts=${counts}
-            />
-          </div>
-          ${filteredPackages.length === 0
-            ? html`<div class="rounded-2xl border border-zinc-800/70 bg-[#0f0f13]/80 p-6 text-center text-sm text-zinc-400">No packages match the current filters.</div>`
-            : view === "list"
-              ? html`<${PackageList} packages=${filteredPackages} />`
-              : html`<${BlocksView} packages=${filteredPackages} />`}
+        <div class="space-y-12">
+          ${liveMode ? html`<${LiveStatusToast} status=${status} />` : null}
+          ${liveMode && status && typeof status.progress === "number"
+            ? html`<div class="flex items-center justify-between gap-3 rounded-lg border border-sky-900/70 bg-sky-950/40 px-4 py-2 text-xs text-sky-100">
+                <span class="flex items-center gap-2 font-semibold uppercase tracking-wide">
+                  ${Icon.cycle("h-3.5 w-3.5 animate-spin")} ${status.message}
+                </span>
+                <span class="font-mono text-sky-200">${Math.round(status.progress)}%</span>
+              </div>`
+            : null}
+          <section id="overview" class="scroll-mt-24 space-y-6">
+            <${SummaryCards} summary=${data.summary} meta=${data.meta} />
+            <${KeySignals} summary=${data.summary} />
+          </section>
+
+          <section id="insights" class="scroll-mt-24">
+            <${CycleInsights} summary=${data.summary} insights=${data.insights?.cycles} />
+          </section>
+
+          <section id="performance" class="scroll-mt-24">
+            <${PerformancePanel} data=${performance} />
+          </section>
+
+          <section class="grid gap-6 lg:grid-cols-2" id="reference">
+            <div class="scroll-mt-24">
+              <${Legend} />
+            </div>
+            <div id="risk-guide" class="scroll-mt-24">
+              <${RiskGuide} />
+            </div>
+          </section>
+
+          <section id="packages" class="scroll-mt-24 space-y-6">
+            <div class="grid gap-4">
+              <${FilterBar}
+                filter=${filter}
+                setFilter=${setFilter}
+                search=${search}
+                setSearch=${setSearch}
+                counts=${counts}
+              />
+            </div>
+            ${filteredPackages.length === 0
+              ? html`<div class="rounded-lg border border-stone-900/70 bg-stone-950/70 p-6 text-center text-sm text-stone-400">
+                  No packages match the current filters.
+                </div>`
+              : html`<${PackageList} packages=${filteredPackages} />`}
+          </section>
         </div>
       `;
     };
 
     const root = document.getElementById("app-root");
     if (root) {
+      const renderApp = () => {
+        render(html`<${App} data=${payload} status=${liveStatus} liveMode=${liveModeActive} />`, root);
+      };
+
       root.innerHTML = "";
-      render(html`<${App} data=${payload} />`, root);
+      renderApp();
+
+      if (liveModeActive) {
+        const connectStream = () => {
+          const source = new EventSource("/events", { withCredentials: false });
+          source.onmessage = (event) => {
+            try {
+              const nextRaw = event.data || "{}";
+              const message = JSON.parse(nextRaw);
+              if (message?.type === "report" && message.payload) {
+                rawPayload = JSON.stringify(message.payload);
+                payload = mergePayload(message.payload);
+                if (message.meta) {
+                  liveStatus = message.meta;
+                }
+                renderApp();
+              } else if (message?.type === "progress" && message.status) {
+                liveStatus = message.status;
+                renderApp();
+              }
+            } catch (err) {
+              console.error("Failed to handle live update", err);
+            }
+          };
+          source.onerror = () => {
+            source.close();
+            setTimeout(connectStream, 2000);
+          };
+        };
+        connectStream();
+      }
     }
   </script>
 </body>

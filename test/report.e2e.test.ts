@@ -1,5 +1,5 @@
 import os from "os";
-import { beforeAll, describe, expect, test, vi } from "vitest";
+import { beforeAll, describe, expect, test } from "bun:test";
 import type { ProjectFixture } from "./fixtures/shared";
 import { createSimpleProjectFixture } from "./fixtures/simple-project";
 import { createWorkspaceFixture } from "./fixtures/workspace-project";
@@ -48,6 +48,12 @@ type RawDependencyReport = {
   packages: RawDependencyReportPackage[];
 };
 
+type CycleSampleEntry = {
+  ownerName: string;
+  ownerAnchor: string;
+  file: string;
+};
+
 type DependencyBadge = {
   name: string;
   anchor: string;
@@ -62,10 +68,28 @@ type HtmlReportPackage = RawDependencyReportPackage & {
   toolingExternalCount: number;
   typeExternalCount: number;
   toolingDepsList: string[];
+  cyclePartners: Array<{
+    name: string;
+    displayName: string;
+    anchor: string;
+    fileCount: number;
+    sampleFiles: CycleSampleEntry[];
+  }>;
   dependencyBadges: DependencyBadge[];
   externalDependencyBadges: Array<{ name: string }>;
   hasIssues: boolean;
   [key: string]: unknown;
+};
+
+type CycleEdgeInsight = {
+  fromName: string;
+  fromAnchor: string;
+  toName: string;
+  toAnchor: string;
+  edgeCount: number;
+  referenceFileCount: number;
+  sampleFiles: CycleSampleEntry[];
+  severity: "high" | "medium" | "low";
 };
 
 type HtmlReportPayload = {
@@ -73,6 +97,7 @@ type HtmlReportPayload = {
     packageCount: number;
     dependencyCount: number;
     cyclicDependencyCount: number;
+    cyclePackageCount: number;
     undeclaredDependencyCount: number;
     runtimeExternalCount: number;
     toolingExternalCount: number;
@@ -83,6 +108,13 @@ type HtmlReportPayload = {
     averageToolingDeps: number;
   };
   packages: HtmlReportPackage[];
+  insights: {
+    cycles: {
+      packageCount: number;
+      edgeCount: number;
+      edges: CycleEdgeInsight[];
+    };
+  };
   meta: {
     rootDir: string;
     generatedAt: string;
@@ -138,7 +170,26 @@ const buildExpectedSummary = (
   let toolingDependencyCount = 0;
   let packagesWithIssues = 0;
 
-  report.packages.forEach((pkg) => {
+  const knownPackageKeys = new Set<string>();
+  report.packages.forEach((pkg, index) => {
+    const displayName =
+      pkg.name && pkg.name.trim().length > 0
+        ? pkg.name
+        : pkg.relativeDir && pkg.relativeDir.trim().length > 0
+          ? pkg.relativeDir
+          : `package-${index + 1}`;
+    if (pkg.name && pkg.name.trim().length > 0) {
+      knownPackageKeys.add(pkg.name);
+    }
+    knownPackageKeys.add(displayName);
+    if (pkg.relativeDir && pkg.relativeDir.trim().length > 0) {
+      knownPackageKeys.add(pkg.relativeDir);
+    }
+  });
+
+  const packagesInCycles = new Set<string>();
+
+  report.packages.forEach((pkg, index) => {
     dependencyCount += pkg.dependencies.length;
     cyclicDependencyCount += pkg.cyclicDeps.length;
     undeclaredDependencyCount += pkg.undeclaredDeps.length;
@@ -154,21 +205,36 @@ const buildExpectedSummary = (
 
     const undeclaredExternalCount = pkg.undeclaredExternalDeps.length;
     const unusedExternalCount = pkg.unusedExternalDeps.length;
-    const hasIssues =
+    const hasIssues = 
       pkg.undeclaredDeps.length > 0 ||
       undeclaredExternalCount > 0 ||
       unusedExternalCount > 0;
     if (hasIssues) {
       packagesWithIssues += 1;
     }
+
+    if (pkg.cyclicDeps.length > 0) {
+      const displayName =
+        pkg.name && pkg.name.trim().length > 0
+          ? pkg.name
+          : pkg.relativeDir && pkg.relativeDir.trim().length > 0
+            ? pkg.relativeDir
+            : `package-${index + 1}`;
+      packagesInCycles.add(displayName);
+      pkg.cyclicDeps.forEach((dep) => {
+        if (knownPackageKeys.has(dep)) {
+          packagesInCycles.add(dep);
+        }
+      });
+    }
   });
 
-  const averageDependencyCount =
-    packageCount > 0
+  const averageDependencyCount = 
+    packageCount > 0 
       ? Number((dependencyCount / packageCount).toFixed(1))
       : 0;
-  const averageToolingDeps =
-    packageCount > 0
+  const averageToolingDeps = 
+    packageCount > 0 
       ? Number((toolingDependencyCount / packageCount).toFixed(1))
       : 0;
 
@@ -176,6 +242,7 @@ const buildExpectedSummary = (
     packageCount,
     dependencyCount,
     cyclicDependencyCount,
+    cyclePackageCount: packagesInCycles.size,
     undeclaredDependencyCount,
     runtimeExternalCount,
     toolingExternalCount,
@@ -187,13 +254,164 @@ const buildExpectedSummary = (
   };
 };
 
+const buildExpectedCycleInsights = (
+  report: RawDependencyReport,
+): HtmlReportPayload["insights"]["cycles"] => {
+  const displayNameByKey = new Map<string, string>();
+  const anchorByKey = new Map<string, string>();
+
+  report.packages.forEach((pkg, index) => {
+    const baseDisplayName =
+      pkg.name && pkg.name.trim().length > 0
+        ? pkg.name
+        : pkg.relativeDir && pkg.relativeDir.trim().length > 0
+          ? pkg.relativeDir
+          : `package-${index + 1}`;
+    const registerKeys = new Set<string>();
+    if (pkg.name && pkg.name.trim().length > 0) {
+      registerKeys.add(pkg.name);
+    }
+    if (pkg.relativeDir && pkg.relativeDir.trim().length > 0) {
+      registerKeys.add(pkg.relativeDir);
+    }
+    if (registerKeys.size === 0) {
+      registerKeys.add(baseDisplayName);
+    }
+    const anchor = makeAnchorId(baseDisplayName);
+    registerKeys.forEach((key) => {
+      if (!displayNameByKey.has(key)) {
+        displayNameByKey.set(key, baseDisplayName);
+      }
+      if (!anchorByKey.has(key)) {
+        anchorByKey.set(key, anchor);
+      }
+    });
+  });
+
+  const resolveDisplayName = (key: string) =>
+    displayNameByKey.get(key) ?? key;
+  const resolveAnchor = (key: string) => anchorByKey.get(key) ?? makeAnchorId(key);
+
+  const packagesInCycles = new Set<string>();
+  const cycleEdgeMap = new Map<
+    string,
+    {
+      aKey: string;
+      bKey: string;
+      edgeCount: number;
+      referenceFileCount: number;
+      sampleFiles: Map<string, Set<string>>;
+    }
+  >();
+
+  report.packages.forEach((pkg, index) => {
+    const packageDisplayName =
+      pkg.name && pkg.name.trim().length > 0
+        ? pkg.name
+        : pkg.relativeDir && pkg.relativeDir.trim().length > 0
+          ? pkg.relativeDir
+          : `package-${index + 1}`;
+    const packageKey =
+      pkg.name && pkg.name.trim().length > 0 ? pkg.name : packageDisplayName;
+
+    if (!Array.isArray(pkg.cyclicDeps) || pkg.cyclicDeps.length === 0) {
+      return;
+    }
+
+    const dependencyDetails = Array.isArray(pkg.dependencyDetails)
+      ? pkg.dependencyDetails
+      : [];
+
+    packagesInCycles.add(packageKey);
+
+    pkg.cyclicDeps.forEach((dep) => {
+      const detail = dependencyDetails.find((entry) => entry.name === dep);
+      const fileCount = detail?.fileCount ?? 0;
+      const sampleFiles = Array.isArray(detail?.files)
+        ? detail.files.filter(
+            (file): file is string => typeof file === "string" && file.length > 0,
+          )
+        : [];
+      const [firstKey, secondKey] =
+        packageKey.localeCompare(dep) <= 0 ? [packageKey, dep] : [dep, packageKey];
+      const pairKey = `${firstKey}::${secondKey}`;
+      const existing = cycleEdgeMap.get(pairKey);
+      if (existing) {
+        existing.edgeCount += 1;
+        existing.referenceFileCount += fileCount;
+        const currentSet = existing.sampleFiles.get(packageKey) ?? new Set<string>();
+        sampleFiles.forEach((file) => currentSet.add(file));
+        existing.sampleFiles.set(packageKey, currentSet);
+      } else {
+        cycleEdgeMap.set(pairKey, {
+          aKey: firstKey,
+          bKey: secondKey,
+          edgeCount: 1,
+          referenceFileCount: fileCount,
+          sampleFiles: sampleFiles.length
+            ? new Map([[packageKey, new Set(sampleFiles)]])
+            : new Map(),
+        });
+      }
+      if (displayNameByKey.has(dep) || anchorByKey.has(dep)) {
+        packagesInCycles.add(dep);
+      }
+    });
+  });
+
+  const edges = Array.from(cycleEdgeMap.values())
+    .map((entry) => {
+      const severity =
+        entry.referenceFileCount >= 10 || entry.edgeCount >= 6
+          ? "high"
+          : entry.referenceFileCount >= 4 || entry.edgeCount >= 3
+            ? "medium"
+            : "low";
+      const sampleDetails: CycleSampleEntry[] = [];
+      entry.sampleFiles.forEach((files, ownerKey) => {
+        const ownerName = resolveDisplayName(ownerKey);
+        const ownerAnchor = resolveAnchor(ownerKey);
+        files.forEach((file) => {
+          sampleDetails.push({ ownerName, ownerAnchor, file });
+        });
+      });
+      const sampleFiles = sampleDetails.slice(0, 5);
+      return {
+        fromName: resolveDisplayName(entry.aKey),
+        fromAnchor: resolveAnchor(entry.aKey),
+        toName: resolveDisplayName(entry.bKey),
+        toAnchor: resolveAnchor(entry.bKey),
+        edgeCount: entry.edgeCount,
+        referenceFileCount: entry.referenceFileCount,
+        sampleFiles,
+        severity,
+      };
+    })
+    .sort((a, b) => {
+      if (b.referenceFileCount !== a.referenceFileCount) {
+        return b.referenceFileCount - a.referenceFileCount;
+      }
+      if (b.edgeCount !== a.edgeCount) {
+        return b.edgeCount - a.edgeCount;
+      }
+      const nameA = `${a.fromName}-${a.toName}`;
+      const nameB = `${b.fromName}-${b.toName}`;
+      return nameA.localeCompare(nameB);
+    });
+
+  return {
+    packageCount: packagesInCycles.size,
+    edgeCount: edges.length,
+    edges,
+  };
+};
+
 async function loadReportHtml(rootDir: string): Promise<{
   report: RawDependencyReport;
   html: string;
 }> {
-  vi.resetModules();
   const [graphModule, utilsModule] = await Promise.all([
-    import("../src/graph"),
+    import("../src/graph?actual"),
     import("../src/utils"),
   ]);
   const report = (await graphModule.generateDependencyReport({
@@ -208,7 +426,7 @@ async function loadReportHtml(rootDir: string): Promise<{
 
 const extractPayload = (html: string): ExtractedPayload => {
   const match = html.match(
-    /<script id="reportData" type="application\/json">([\s\S]*?)<\/script>/,
+    /<script id=\"reportData\" type=\"application\/json\">([\s\S]*?)<\/script>/,
   );
   if (!match) {
     throw new Error("Report payload script block not found in generated HTML");
@@ -219,12 +437,6 @@ const extractPayload = (html: string): ExtractedPayload => {
 };
 
 describe("generated report e2e", () => {
-  beforeAll(() => {
-    vi.doUnmock("ts-morph");
-    vi.doUnmock("../src/utils");
-    vi.doUnmock("../src/graph");
-  });
-
   const scenarios: Array<[string, () => Promise<ProjectFixture>]> = [
     ["a simple project", createSimpleProjectFixture],
     ["a workspace project", createWorkspaceFixture],
@@ -244,6 +456,16 @@ describe("generated report e2e", () => {
 
         expect(data.packages).toHaveLength(report.packages.length);
         expect(data.summary).toMatchObject(buildExpectedSummary(report));
+        const expectedCycleInsights = buildExpectedCycleInsights(report);
+        expect(data.insights?.cycles?.packageCount).toBe(
+          expectedCycleInsights.packageCount,
+        );
+        expect(data.insights?.cycles?.edgeCount).toBe(
+          expectedCycleInsights.edgeCount,
+        );
+        expect(data.insights?.cycles?.edges).toEqual(
+          expectedCycleInsights.edges,
+        );
 
         const expectedSystemInfo = `${os.type()} ${os.release()} (${os.arch()})`;
         expect(data.meta.rootDir).toBe(report.rootDir);
@@ -251,6 +473,18 @@ describe("generated report e2e", () => {
         expect(data.meta.systemInfo).toBe(expectedSystemInfo);
         expect(typeof data.meta.generatedAt).toBe("string");
         expect(data.meta.generatedAt.trim().length).toBeGreaterThan(0);
+
+        const anchorLookup = new Map<string, string>();
+        data.packages.forEach((pkgView, idx) => {
+          const source = report.packages[idx];
+          if (source.name && source.name.trim().length > 0) {
+            anchorLookup.set(source.name, pkgView.anchorId);
+          }
+          if (source.relativeDir && source.relativeDir.trim().length > 0) {
+            anchorLookup.set(source.relativeDir, pkgView.anchorId);
+          }
+          anchorLookup.set(pkgView.displayName, pkgView.anchorId);
+        });
 
         const seenAnchors = new Set<string>();
         report.packages.forEach((pkg, index) => {
@@ -275,7 +509,29 @@ describe("generated report e2e", () => {
           );
           expect(
             view.dependencyBadges.map((badge) => badge.anchor),
-          ).toEqual(pkg.dependencies.map((dep) => makeAnchorId(dep)));
+          ).toEqual(
+            pkg.dependencies.map(
+              (dep) => anchorLookup.get(dep) ?? makeAnchorId(dep),
+            ),
+          );
+
+          expect(view.cyclePartners.map((partner) => partner.name)).toEqual(
+            pkg.cyclicDeps,
+          );
+          expect(
+            view.cyclePartners.map((partner) => partner.anchor),
+          ).toEqual(
+            pkg.cyclicDeps.map(
+              (dep) => anchorLookup.get(dep) ?? makeAnchorId(dep),
+            ),
+          );
+          view.cyclePartners.forEach((partner) => {
+            partner.sampleFiles.forEach((sample) => {
+              expect(sample.ownerName).toBe(view.displayName);
+              expect(sample.ownerAnchor).toBe(view.anchorId);
+              expect(typeof sample.file).toBe("string");
+            });
+          });
 
           const { runtime, tooling, type } = computeExternalBreakdown(
             pkg.externalDependencies,
@@ -288,7 +544,7 @@ describe("generated report e2e", () => {
 
           const undeclaredExternalCount = pkg.undeclaredExternalDeps.length;
           const unusedExternalCount = pkg.unusedExternalDeps.length;
-          const hasIssues =
+          const hasIssues = 
             pkg.undeclaredDeps.length > 0 ||
             undeclaredExternalCount > 0 ||
             unusedExternalCount > 0;

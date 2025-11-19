@@ -1,330 +1,203 @@
 #!/usr/bin/env node
-import chalk from "chalk";
-import ora from "ora";
-import fs from "fs/promises";
+import chalk, { type ChalkInstance } from "chalk";
+import ora, { type Ora, type Options as OraOptions } from "ora";
 import { parseArgs } from "node:util";
-import { generateDependencyReport } from "./graph.js";
-import { renderHtmlReport, serializeReportToJson } from "./utils.js";
+import {
+  generateDependencyReport as defaultGenerateDependencyReport,
+} from "./graph.js";
+import { startLiveUiServer as startLiveUiServerImpl } from "./live-server.js";
 
-type OutputFormat = "html" | "json";
+ type OraFactory = (options?: string | OraOptions) => Ora;
 
-const VALID_FORMATS: OutputFormat[] = ["html", "json"];
+ type RetracifyMocks = {
+   startLiveUiServer?: typeof startLiveUiServerImpl;
+   ora?: OraFactory;
+   chalk?: ChalkInstance;
+ };
 
-// Keep some personality in the CLI before work begins.
-function renderCliBanner() {
-  const innerWidth = 96;
-  const padCenter = (text: string, width: number) => {
-    const trimmed = text.length > width ? text.slice(0, width) : text;
-    const padding = Math.max(0, width - trimmed.length);
-    const left = Math.floor(padding / 2);
-    const right = padding - left;
-    return `${" ".repeat(left)}${trimmed}${" ".repeat(right)}`;
-  };
+ const mockContext =
+   ((globalThis as unknown as { __retracifyMocks?: RetracifyMocks })
+     .__retracifyMocks ?? {}) as RetracifyMocks;
 
-  const lines = [
-    `┏${"━".repeat(innerWidth)}┓`,
-    `┃ ┏${"━".repeat(innerWidth - 4)}┓ ┃`,
-    `┃ ┃${padCenter("RETRACIFY", innerWidth - 4)}┃ ┃`,
-    `┃ ┃${padCenter("dependency graphs made simple", innerWidth - 4)}┃ ┃`,
-    `┃ ┗${"━".repeat(innerWidth - 4)}┛ ┃`,
-    `┗${"━".repeat(innerWidth)}┛`,
-  ];
+ const startLiveUiServer =
+   mockContext.startLiveUiServer ?? startLiveUiServerImpl;
+ const oraFactory: OraFactory = mockContext.ora ?? ora;
+ const chalkLib: ChalkInstance = mockContext.chalk ?? chalk;
 
-  const gradientStops = [
-    "#f97316",
-    "#fbbf24",
-    "#22d3ee",
-    "#a855f7",
-    "#ec4899",
-    "#f97316",
-  ];
+ function renderCliBanner(): void {
+   const innerWidth = 84;
+   const padCenter = (text: string, width: number) => {
+     const trimmed = text.length > width ? text.slice(0, width) : text;
+     const padding = Math.max(0, width - trimmed.length);
+     const left = Math.floor(padding / 2);
+     const right = padding - left;
+     return `${" ".repeat(left)}${trimmed}${" ".repeat(right)}`;
+   };
 
-  const hexToRgb = (hex: string) => {
-    const normalized = hex.replace("#", "");
-    const bigint = parseInt(normalized, 16);
-    return {
-      r: (bigint >> 16) & 255,
-      g: (bigint >> 8) & 255,
-      b: bigint & 255,
-    };
-  };
+   const lines = [
+     `┏${"━".repeat(innerWidth)}┓`,
+     `┃ ┏${"━".repeat(innerWidth - 4)}┓ ┃`,
+     `┃ ┃${padCenter("RETRACIFY", innerWidth - 4)}┃ ┃`,
+     `┃ ┃${padCenter("live dependency insights", innerWidth - 4)}┃ ┃`,
+     `┃ ┗${"━".repeat(innerWidth - 4)}┛ ┃`,
+     `┗${"━".repeat(innerWidth)}┛`,
+   ];
 
-  const rgbToHex = (r: number, g: number, b: number) =>
-    `#${[r, g, b]
-      .map((value) => value.toString(16).padStart(2, "0"))
-      .join("")}`;
+   const palette = [
+     "#f97316",
+     "#fbbf24",
+     "#22d3ee",
+     "#a855f7",
+     "#ec4899",
+     "#f97316",
+   ];
 
-  const mixColors = (start: string, end: string, fraction: number) => {
-    const a = hexToRgb(start);
-    const b = hexToRgb(end);
-    const clamp = Math.max(0, Math.min(1, fraction));
-    const r = Math.round(a.r + (b.r - a.r) * clamp);
-    const g = Math.round(a.g + (b.g - a.g) * clamp);
-    const bl = Math.round(a.b + (b.b - a.b) * clamp);
-    return rgbToHex(r, g, bl);
-  };
+   const hexToRgb = (hex: string) => {
+     const normalized = hex.replace("#", "");
+     const bigint = parseInt(normalized, 16);
+     return {
+       r: (bigint >> 16) & 255,
+       g: (bigint >> 8) & 255,
+       b: bigint & 255,
+     };
+   };
 
-  const gradientColorAt = (progress: number) => {
-    const steps = gradientStops.length - 1;
-    const clamped = Math.max(0, Math.min(1, progress));
-    const scaled = clamped * steps;
-    const index = Math.min(Math.floor(scaled), steps - 1);
-    const localT = scaled - index;
-    return mixColors(gradientStops[index], gradientStops[index + 1], localT);
-  };
+   const rgbToHex = (r: number, g: number, b: number) =>
+     `#${[r, g, b]
+       .map((value) => value.toString(16).padStart(2, "0"))
+       .join("")}`;
 
-  const textRows = new Set([2, 3]);
+   const blend = (start: string, end: string, t: number) => {
+     const a = hexToRgb(start);
+     const b = hexToRgb(end);
+     const clamped = Math.max(0, Math.min(1, t));
+     const r = Math.round(a.r + (b.r - a.r) * clamped);
+     const g = Math.round(a.g + (b.g - a.g) * clamped);
+     const bl = Math.round(a.b + (b.b - a.b) * clamped);
+     return rgbToHex(r, g, bl);
+   };
 
-  const colorized = lines.map((line, rowIdx) =>
-    line
-      .split("")
-      .map((char, colIdx) => {
-        if (char === " ") return " ";
-        const diagonalIndex = rowIdx + colIdx;
-        const maxSpan = lines.length + line.length;
-        const tone = gradientColorAt(diagonalIndex / maxSpan);
-        const insideText =
-          textRows.has(rowIdx) && colIdx > 2 && colIdx < line.length - 3;
+   const colorStops = (progress: number) => {
+     const segments = palette.length - 1;
+     const clamped = Math.max(0, Math.min(1, progress));
+     const scaled = clamped * segments;
+     const index = Math.min(Math.floor(scaled), segments - 1);
+     const localT = scaled - index;
+     return blend(palette[index], palette[index + 1], localT);
+   };
 
-        if (insideText && /\S/.test(char)) {
-          return chalk.hex("#f8fafc").bold(char);
-        }
+   console.log();
+   lines.forEach((line, rowIdx) => {
+     const colored = line
+       .split("")
+       .map((char, colIdx) => {
+         if (char === " ") return " ";
+         const diagonalIndex = rowIdx + colIdx;
+         const tone = colorStops(diagonalIndex / (lines.length + line.length));
+         return chalkLib.hex(tone)(char);
+       })
+       .join("");
+     console.log(colored);
+   });
+   console.log();
+ }
 
-        return chalk.hex(tone)(char);
-      })
-      .join(""),
-  );
-
-  console.log();
-  colorized.forEach((line) => console.log(line));
-  console.log();
-}
-
-function normalizeFormat(
-  value: string | undefined,
-  fallback: OutputFormat,
-): OutputFormat {
-  if (!value) return fallback;
-  const normalized = value.toLowerCase();
-  return VALID_FORMATS.includes(normalized as OutputFormat)
-    ? (normalized as OutputFormat)
-    : fallback;
-}
-
-function renderHelp(): void {
-  console.log(`
-Usage: retracify [rootDir] [outputFile] [options]
+ function renderHelp(): void {
+   console.log(`
+Usage: retracify [rootDir] [options]
 
 Arguments:
-  rootDir       Root directory to analyse (default: current directory)
-  outputFile    Optional output filename (extension adjusted automatically)
+  rootDir                Root directory to analyse (default: current directory)
 
 Options:
-  -f, --format <html|json>  Select output format (default: html)
-      --html                Shortcut for --format html
-  -j, --json                Shortcut for --format json
-  -h, --help                Show this help message
+  -p, --port <number>    Port for the live dashboard (default: 4173)
+      --host <value>     Host/interface to bind (default: 127.0.0.1)
+      --no-open          Do not launch a browser automatically
+  -h, --help             Show this help message
 
 Examples:
-  retracify ./apps ./report.html
-  retracify --json
+  retracify
+  retracify ../workspace --port 4321
+  retracify apps/catalog --host 0.0.0.0 --no-open
 `);
-}
+ }
 
-function resolveOutputFilename(
-  desired: string | undefined,
-  format: OutputFormat,
-): string {
-  const extension = format === "json" ? ".json" : ".retracify.html";
+ (async () => {
+   let parsedArgs;
+   try {
+     parsedArgs = parseArgs({
+       args: process.argv.slice(2),
+       options: {
+         help: { type: "boolean", short: "h" },
+         port: { type: "string", short: "p" },
+         host: { type: "string" },
+         "no-open": { type: "boolean" },
+       },
+       allowPositionals: true,
+       strict: true,
+     });
+   } catch (error) {
+     console.error(chalkLib.red((error as Error).message));
+     renderHelp();
+     process.exit(1);
+     return;
+   }
 
-  if (!desired || desired.trim().length === 0) {
-    return format === "json" ? `dependencies${extension}` : extension;
-  }
-
-  const trimmed = desired.trim();
-  const normalized = trimmed.toLowerCase();
-
-  if (format === "json") {
-    if (normalized.endsWith(".json")) return trimmed;
-    if (normalized.endsWith(".retracify.html")) {
-      return trimmed.replace(/\.retracify\.html$/i, ".json");
-    }
-    return `${trimmed}${extension}`;
-  }
-
-  if (normalized.endsWith(".retracify.html")) {
-    return trimmed;
-  }
-
-  if (normalized.endsWith(".html")) {
-    return trimmed.replace(/\.html$/i, extension);
-  }
-
-  if (normalized.endsWith(".json")) {
-    return trimmed.replace(/\.json$/i, extension);
-  }
-
-  return `${trimmed}${extension}`;
-}
-
-(async () => {
-  let parsedArgs;
-  try {
-    parsedArgs = parseArgs({
-      args: process.argv.slice(2),
-      options: {
-        format: { type: "string", short: "f" },
-        html: { type: "boolean" },
-        json: { type: "boolean", short: "j" },
-        help: { type: "boolean", short: "h" },
-      },
-      allowPositionals: true,
-      strict: true,
-    });
-  } catch (error) {
-    console.error(chalk.red((error as Error).message));
-    renderHelp();
-    process.exit(1);
-  }
-
-  const { values, positionals } = parsedArgs;
+   const { values, positionals } = parsedArgs;
 
   if (values.help) {
     renderHelp();
     process.exit(0);
+    return;
   }
 
-  if (positionals.length > 2) {
-    console.error(
-      chalk.red(
-        "Too many positional arguments provided. Expected at most [rootDir] [outputFile].",
-      ),
-    );
-    renderHelp();
-    process.exit(1);
-  }
+   if (positionals.length > 1) {
+     console.error(
+       chalkLib.red(
+         "Too many positional arguments provided. Expected at most [rootDir].",
+       ),
+     );
+     renderHelp();
+     process.exit(1);
+   }
 
-  let requestedFormat: string | undefined = values.format;
-  if (values.html) requestedFormat = "html";
-  if (values.json) requestedFormat = "json";
+   const rootDir = positionals[0] ?? ".";
+   const rawPort = values.port ? values.port.trim() : "";
+   const host = values.host ? values.host.trim() : "127.0.0.1";
+   const autoOpen = !values["no-open"];
 
-  const normalizedFormat = normalizeFormat(
-    requestedFormat,
-    values.json ? "json" : "html",
-  );
-
-  if (requestedFormat && normalizedFormat !== requestedFormat.toLowerCase()) {
-    console.error(
-      chalk.red(
-        `Invalid format "${requestedFormat}". Supported formats: ${VALID_FORMATS.join(", ")}.`,
-      ),
-    );
-    renderHelp();
-    process.exit(1);
-  }
-
-  const rootDir = positionals[0] ?? ".";
-  const outputFile = positionals[1];
-
-  renderCliBanner();
-
-  const finalOutputFile = resolveOutputFilename(outputFile, normalizedFormat);
-
-  console.log(chalk.gray(`Root directory: ${rootDir}`));
-  console.log(chalk.gray(`Output file: ${finalOutputFile}`));
-  console.log(chalk.gray(`Output format: ${normalizedFormat}\n`));
-
-  // Show progressive feedback while the report is assembled.
-  const spinner = ora("Generating dependency graph...").start();
-  const start = Date.now();
-
-  try {
-    const reportData = await generateDependencyReport({
-      rootDir,
-      onProgress: (msg, progress) => {
-        const percentage = progress ? `[${Math.round(progress)}%] ` : "";
-        setTimeout(() => {
-          spinner.text = chalk.cyan(`${percentage}${msg}`);
-        }, 10);
-      },
-    });
-
-    const outputContent =
-      normalizedFormat === "json"
-        ? serializeReportToJson(reportData)
-        : await renderHtmlReport(reportData, rootDir);
-
-    await fs.writeFile(finalOutputFile, outputContent, "utf8");
-
-    const duration = ((Date.now() - start) / 1000).toFixed(1);
-    const formatLabel = normalizedFormat.toUpperCase();
-    spinner.succeed(
-      chalk.green(
-        `Report (${chalk.bold(formatLabel)}) written to ${chalk.bold(finalOutputFile)} ${chalk.gray(
-          `(${duration}s)`,
-        )}`,
-      ),
-    );
-
-    const packages = reportData.packages;
-    if (packages.length > 0) {
-      const packagesWithIssues = packages.filter((pkg) => {
-        const undeclared = (pkg.undeclaredDeps?.length ?? 0) > 0;
-        const external = (pkg.undeclaredExternalDeps?.length ?? 0) > 0;
-        const unused = (pkg.unusedExternalDeps?.length ?? 0) > 0;
-        return undeclared || external || unused;
-      }).length;
-      const runtimeExternalCount = packages.reduce((acc, pkg) => {
-        return (
-          acc +
-          (pkg.externalDependencies || []).filter(
-            (dep) => !dep.isToolingOnly && !dep.isLikelyTypePackage,
-          ).length
-        );
-      }, 0);
-      const toolingExternalCount = packages.reduce((acc, pkg) => {
-        return (
-          acc +
-          (pkg.externalDependencies || []).filter((dep) => dep.isToolingOnly)
-            .length
-        );
-      }, 0);
-      const typeExternalCount = packages.reduce((acc, pkg) => {
-        return (
-          acc +
-          (pkg.externalDependencies || []).filter(
-            (dep) => dep.isLikelyTypePackage,
-          ).length
-        );
-      }, 0);
-      const toolingDepsCount = packages.reduce(
-        (acc, pkg) => acc + (pkg.toolingDeps?.length ?? 0),
-        0,
-      );
-      const averageInternalDeps = (
-        packages.reduce((acc, pkg) => acc + pkg.dependencies.length, 0) /
-        packages.length
-      ).toFixed(1);
-
-      console.log();
-      console.log(
-        chalk.gray(
-          `Packages: ${chalk.white(packages.length)} (needs attention: ${chalk.yellow(packagesWithIssues)})`,
+   let port = 4173;
+   if (rawPort.length > 0) {
+     const parsed = Number.parseInt(rawPort, 10);
+     if (Number.isNaN(parsed) || parsed < 1 || parsed > 65535) {
+      console.error(
+        chalkLib.red(
+          `Invalid --port value "${rawPort}". Expected an integer between 1 and 65535.`,
         ),
       );
-      console.log(
-        chalk.gray(
-          `Internal deps: avg ${chalk.white(averageInternalDeps)} • runtime externals: ${chalk.white(runtimeExternalCount)} • tooling: ${chalk.white(toolingExternalCount)} • types: ${chalk.white(typeExternalCount)}`,
-        ),
-      );
-      console.log(
-        chalk.gray(
-          `Tooling references detected: ${chalk.white(toolingDepsCount)}`,
-        ),
-      );
+      process.exit(1);
+      return;
     }
-  } catch (err) {
-    spinner.fail(chalk.red((err as Error).message));
-    process.exit(1);
-  }
-})();
+     port = parsed;
+   }
+
+   renderCliBanner();
+
+   console.log(chalkLib.gray(`Root directory: ${rootDir}`));
+   console.log(chalkLib.gray(`Host: ${host}`));
+   console.log(chalkLib.gray(`Port: ${port}`));
+   console.log();
+
+   await startLiveUiServer({
+     rootDir,
+     port,
+     host,
+     generateReport: defaultGenerateDependencyReport,
+     ora: oraFactory,
+     chalk: chalkLib,
+     autoOpen,
+   });
+ })().catch((error: unknown) => {
+   console.error(chalkLib.red((error as Error).message));
+   process.exit(1);
+ });
